@@ -1,9 +1,9 @@
-import upperWestsideImg from '../images/upper-westside.jpg'
-import grantParkImg from '../images/grant-park.jpg'
-import inmanParkImg from '../images/inman-park.jpg'
-import westEndImg from '../images/west-end.jpg'
-import decaturImg from '../images/decatur.jpg'
-import avondaleEstatesImg from '../images/avondale-estates.jpg'
+const upperWestsideImg = '/images/upper-westside.jpg'
+const grantParkImg = '/images/grant-park.jpg'
+const inmanParkImg = '/images/inman-park.jpg'
+const westEndImg = '/images/west-end.jpg'
+const decaturImg = '/images/decatur.jpg'
+const avondaleEstatesImg = '/images/avondale-estates.jpg'
 
 type ID = number
 

@@ -1,0 +1,14 @@
+{
+  "extends": "next/core-web-vitals",
+  "plugins": ["simple-import-sort"],
+  "rules": {
+    "simple-import-sort/imports": [
+      "error",
+      {
+        // Same as the default grouping, but without blank lines between groups.
+        "groups": [["^\\u0000", "^@?\\w", "^", "^\\."]]
+      }
+    ],
+    "simple-import-sort/exports": "error"
+  }
+}

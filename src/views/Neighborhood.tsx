@@ -1,4 +1,3 @@
-import { Link as RouteLink, useParams } from 'react-router-dom'
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -10,36 +9,40 @@ import {
   Link,
   Stack,
   Text,
-} from '@chakra-ui/react'
-import { neighborhoods, tours } from './api'
-import { Tour } from './Tour'
+} from "@chakra-ui/react";
+import NextLink from "next/link";
+import { neighborhoods, tours } from "../api";
+import { Tour } from "./Tour";
 
-export const Neighborhood = () => {
-  const { slug } = useParams()
-  const neighborhood = [...neighborhoods.values()].find((n) => n.slug === slug)
+interface NeighborhoodProps {
+  slug: string;
+}
+
+export const Neighborhood = ({ slug }: NeighborhoodProps) => {
+  const neighborhood = [...neighborhoods.values()].find((n) => n.slug === slug);
 
   if (!neighborhood) {
-    return null
+    return null;
   }
 
   const matchingTours = [...tours.values()].filter(
-    (tour) => tour.neighborhoodId === neighborhood.id,
-  )
+    (tour) => tour.neighborhoodId === neighborhood.id
+  );
 
   return (
-    <Container maxW={['container.sm', 'container.sm', '768px']} py="6">
+    <Container maxW={["container.sm", "container.sm", "768px"]} py="6">
       <Stack align="left" spacing="6">
         <Breadcrumb>
           <BreadcrumbItem>
-            <BreadcrumbLink as={RouteLink} to="/">
+            <BreadcrumbLink as={NextLink} href="/">
               Neighborhoods
             </BreadcrumbLink>
           </BreadcrumbItem>
 
           <BreadcrumbItem isCurrentPage isLastChild>
             <BreadcrumbLink
-              as={RouteLink}
-              to={`/neighborhoods/${neighborhood.slug}`}
+              as={NextLink}
+              href={`/neighborhoods/${neighborhood.slug}`}
             >
               {neighborhood.name}
             </BreadcrumbLink>
@@ -56,8 +59,8 @@ export const Neighborhood = () => {
             <Text align="center" fontSize="lg" color="gray.600">
               Darn! There aren&apos;t any tours in this neighborhood yet.
               <br />
-              View more{' '}
-              <Link color="orange.500" as={RouteLink} to="/">
+              View more{" "}
+              <Link color="orange.500" as={NextLink} href="/">
                 neighborhoods
               </Link>
               .
@@ -69,5 +72,5 @@ export const Neighborhood = () => {
         ))}
       </Stack>
     </Container>
-  )
-}
+  );
+};

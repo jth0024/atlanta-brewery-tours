@@ -1,9 +1,9 @@
-import React from 'react'
 import { Box, Divider } from '@chakra-ui/react'
+import React from 'react'
 import { Topbar } from './Topbar'
 
 interface LayoutProps {
-  children: React.ReactElement
+  children: React.ReactNode
 }
 
 export const Layout = ({ children }: LayoutProps) => (
