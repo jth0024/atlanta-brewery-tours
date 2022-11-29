@@ -9,28 +9,30 @@ import {
   Link,
   Stack,
   Text,
-} from "@chakra-ui/react";
-import NextLink from "next/link";
-import { neighborhoods, tours } from "../api";
-import { Tour } from "./Tour";
+} from '@chakra-ui/react'
+import NextLink from 'next/link'
+import { neighborhoods, tours } from '../api'
+import { Tour } from './Tour'
 
 interface NeighborhoodProps {
-  slug: string;
+  slug: string
 }
 
 export const Neighborhood = ({ slug }: NeighborhoodProps) => {
-  const neighborhood = [...neighborhoods.values()].find((n) => n.slug === slug);
+  const neighborhood = [...neighborhoods.values()].find((n) => n.slug === slug)
 
   if (!neighborhood) {
-    return null;
+    return null
   }
 
   const matchingTours = [...tours.values()].filter(
-    (tour) => tour.neighborhoodId === neighborhood.id
-  );
+    (tour) => tour.neighborhoodId === neighborhood.id,
+  )
+
+  console.log(neighborhood)
 
   return (
-    <Container maxW={["container.sm", "container.sm", "768px"]} py="6">
+    <Container maxW={['container.sm', 'container.sm', '768px']} py="6">
       <Stack align="left" spacing="6">
         <Breadcrumb>
           <BreadcrumbItem>
@@ -40,12 +42,7 @@ export const Neighborhood = ({ slug }: NeighborhoodProps) => {
           </BreadcrumbItem>
 
           <BreadcrumbItem isCurrentPage isLastChild>
-            <BreadcrumbLink
-              as={NextLink}
-              href={`/neighborhoods/${neighborhood.slug}`}
-            >
-              {neighborhood.name}
-            </BreadcrumbLink>
+            <BreadcrumbLink>{neighborhood.name}</BreadcrumbLink>
           </BreadcrumbItem>
         </Breadcrumb>
         <Image
@@ -59,7 +56,7 @@ export const Neighborhood = ({ slug }: NeighborhoodProps) => {
             <Text align="center" fontSize="lg" color="gray.600">
               Darn! There aren&apos;t any tours in this neighborhood yet.
               <br />
-              View more{" "}
+              View more{' '}
               <Link color="orange.500" as={NextLink} href="/">
                 neighborhoods
               </Link>
@@ -72,5 +69,5 @@ export const Neighborhood = ({ slug }: NeighborhoodProps) => {
         ))}
       </Stack>
     </Container>
-  );
-};
+  )
+}

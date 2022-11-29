@@ -1,30 +1,30 @@
 import {
-  ButtonGroup,
   Button,
+  ButtonGroup,
   Card,
   CardBody,
   CardFooter,
   CardHeader,
+  FormControl,
+  FormHelperText,
+  FormLabel,
   Heading,
   HStack,
+  Input,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalFooter,
+  ModalHeader,
+  ModalOverlay,
   Spacer,
   Tag,
   Text,
   useDisclosure,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  FormControl,
-  FormLabel,
-  Input,
-  FormHelperText,
-  ModalCloseButton,
 } from '@chakra-ui/react'
-import { Tour as ITour } from './api'
 import React from 'react'
+import { Tour as ITour } from '../api'
 
 interface TourProps {
   tour: ITour
@@ -71,7 +71,7 @@ export const Tour = ({ tour }: TourProps) => {
             </Card>
             <Text mb="8">
               Where should we send the info? Enter your email address below, and
-              we'll send a tour map to you!
+              we&apos;ll send a tour map to you!
             </Text>
             <FormControl>
               <FormLabel>Email Address</FormLabel>
