@@ -15,24 +15,24 @@ import {
   StackDivider,
   Text,
   Wrap,
-} from '@chakra-ui/react'
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { neighborhoods, regions, Region, Neighborhood, tours } from './api'
-import { Tour } from './Tour'
+} from "@chakra-ui/react";
+import { useState } from "react";
+import Link from "next/link";
+import { neighborhoods, regions, Region, Neighborhood, tours } from "../api";
+import { Tour } from "./Tour";
 
 const filterByRegion = (neighborhoods: Neighborhood[], regions: Region[]) =>
   regions.length === 0
     ? neighborhoods
     : neighborhoods.filter(({ regionIds }) =>
-        regions.some((r) => regionIds.includes(r.id)),
-      )
+        regions.some((r) => regionIds.includes(r.id))
+      );
 
-const getFeaturedTours = () => [...tours.values()].filter((t) => t.isFeatured)
+const getFeaturedTours = () => [...tours.values()].filter((t) => t.isFeatured);
 
 export const Home = () => {
-  const [filters, setFilters] = useState<Region[]>([])
-  const results = filterByRegion([...neighborhoods.values()], filters)
+  const [filters, setFilters] = useState<Region[]>([]);
+  const results = filterByRegion([...neighborhoods.values()], filters);
 
   return (
     <div>
@@ -40,13 +40,13 @@ export const Home = () => {
         as="iframe"
         src="https://snazzymaps.com/embed/413288"
         width="100%"
-        height={['300px', '500px']}
+        height={["300px", "500px"]}
         border="none"
         title="Atlanta Brewery Tours Map"
       />
       <Divider orientation="horizontal" />
       <Container
-        maxW={['container.sm', 'container.sm', '768px']}
+        maxW={["container.sm", "container.sm", "768px"]}
         padding="0px"
         py="6"
       >
@@ -73,16 +73,16 @@ export const Home = () => {
             <Button
               key={region.id}
               borderRadius="full"
-              colorScheme={filters.includes(region) ? 'orange' : 'gray'}
-              variant={filters.includes(region) ? 'solid' : 'outline'}
+              colorScheme={filters.includes(region) ? "orange" : "gray"}
+              variant={filters.includes(region) ? "solid" : "outline"}
               cursor="pointer"
               onClick={() => {
                 setFilters((prev) => {
                   if (prev.includes(region)) {
-                    return prev.filter((f) => f !== region)
+                    return prev.filter((f) => f !== region);
                   }
-                  return prev.concat(region)
-                })
+                  return prev.concat(region);
+                });
               }}
             >
               {region.name}
@@ -124,7 +124,7 @@ export const Home = () => {
               </CardBody>
               <CardFooter justify="flex-end">
                 <Flex justifyContent="flex-end" mt={6}>
-                  <Link to={`/neighborhoods/${slug}`}>
+                  <Link href={`/neighborhoods/${slug}`}>
                     <Button colorScheme="gray" ml="auto">
                       View Tours
                     </Button>
@@ -136,5 +136,5 @@ export const Home = () => {
         </Stack>
       </Container>
     </div>
-  )
-}
+  );
+};
