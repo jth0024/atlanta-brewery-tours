@@ -1,3 +1,3 @@
-export { Home } from './Home'
-export { Neighborhood } from './Neighborhood'
-export { Tour } from './Tour'
+export * from './Home'
+export * from './Neighborhood'
+export * from './Tour'

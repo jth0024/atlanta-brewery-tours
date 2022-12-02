@@ -2,23 +2,32 @@ import { ApolloServer } from '@apollo/server'
 import { startServerAndCreateNextHandler } from '@as-integrations/next'
 import { makeExecutableSchema } from '@graphql-tools/schema'
 import { Client, isFullPage } from '@notionhq/client'
-import { GetPageResponse } from '@notionhq/client/build/src/api-endpoints'
+import {
+  GetPageResponse,
+  QueryDatabaseParameters,
+} from '@notionhq/client/build/src/api-endpoints'
 import { gql } from 'graphql-tag'
 import { get } from 'lodash'
 
-const auth = process.env.NOTION_API_KEY
+const auth = process.env.NOTION_API_KEY ?? ''
 const toursDB = process.env.NOTION_TOURS_DATABASE_ID ?? ''
+const regionsDB = process.env.NOTION_REGIONS_DATABASE_ID ?? ''
 const breweriesDB = process.env.NOTION_BREWERIES_DATABASE_ID ?? ''
 const neighborhoodsDB = process.env.NOTION_NEIGHBORHOODS_DATABASE_ID ?? ''
 
 export const client = new Client({ auth })
 
 const typeDefs = gql`
+  input NeighborhoodsInput {
+    slug: String
+  }
+
   type Query {
     breweries: [Brewery!]!
     brewery(id: ID): Brewery
-    neighborhoods: [Neighborhood!]!
+    neighborhoods(filter: NeighborhoodsInput): [Neighborhood!]!
     neighborhood(id: ID): Neighborhood
+    regions: [Region!]!
     tours: [Tour!]!
     tour(id: ID): Tour
   }
@@ -57,6 +66,8 @@ const typeDefs = gql`
 const getCheckbox = (response: GetPageResponse, field: string): boolean =>
   get(response, ['properties', field, 'checkbox'], false)
 const getId = (response: GetPageResponse): string => get(response, 'id', '')
+const getImageFile = (response: GetPageResponse, field: string): string =>
+  get(response, ['properties', field, 'files', 0, 'file', 'url'], '')
 const getNumber = (response: GetPageResponse, field: string): number =>
   get(response, ['properties', field, 'number'], 0)
 const getRichText = (response: GetPageResponse, field: string): string =>
@@ -71,9 +82,11 @@ const getTitle = (response: GetPageResponse, field: string): string =>
 const queryDatabase = async (
   id: string,
   mapper: (response: GetPageResponse) => any,
+  filter?: QueryDatabaseParameters['filter'],
 ) => {
   const { results } = await client.databases.query({
     database_id: id,
+    filter,
   })
   return results.filter(isFullPage).map(mapper)
 }
@@ -114,6 +127,7 @@ const toBrewery = (response: GetPageResponse) => ({
 const toNeighborhood = (response: GetPageResponse) => ({
   _regionsId: get(response, 'properties.Regions.id', ''),
   id: getId(response),
+  imageSrc: getImageFile(response, 'Image'),
   description: getRichText(response, 'Description'),
   name: getTitle(response, 'Name'),
   slug: getRichText(response, 'Slug'),
@@ -145,8 +159,19 @@ const resolvers = {
     async neighborhood(_: any, args: { id: string }) {
       return retrievePage(args.id, toNeighborhood)
     },
-    async neighborhoods() {
-      return queryDatabase(neighborhoodsDB, toNeighborhood)
+    async neighborhoods(_: any, args: { filter?: { slug?: string } }) {
+      const filter = args.filter?.slug
+        ? {
+            property: 'Slug',
+            rich_text: {
+              equals: args.filter.slug,
+            },
+          }
+        : undefined
+      return queryDatabase(neighborhoodsDB, toNeighborhood, filter)
+    },
+    async regions() {
+      return queryDatabase(regionsDB, toRegion)
     },
     async tour(_: any, args: { id: string }) {
       return retrievePage(args.id, toTour)
