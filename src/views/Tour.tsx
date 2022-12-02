@@ -24,13 +24,15 @@ import {
   useDisclosure,
 } from '@chakra-ui/react'
 import React from 'react'
-import { Tour as ITour } from '../api'
 
 interface TourProps {
-  tour: ITour
+  breweries: number
+  description: string
+  distance: number
+  name: string
 }
-export const Tour = ({ tour }: TourProps) => {
-  const { name, breweryIds, distance, description } = tour
+
+export const Tour = ({ breweries, description, distance, name }: TourProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   return (
@@ -40,7 +42,7 @@ export const Tour = ({ tour }: TourProps) => {
           <Heading size="sm">{name}</Heading>
           <Spacer height="2" />
           <HStack>
-            <Tag>{`${breweryIds.length} Stops`}</Tag>
+            <Tag>{`${breweries} Stops`}</Tag>
             <Tag>{`${distance} miles`}</Tag>
           </HStack>
         </CardHeader>

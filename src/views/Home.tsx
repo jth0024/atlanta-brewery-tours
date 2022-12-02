@@ -18,21 +18,53 @@ import {
 } from '@chakra-ui/react'
 import Link from 'next/link'
 import { useState } from 'react'
-import { Neighborhood, neighborhoods, Region, regions, tours } from '../api'
+import { useQuery } from 'urql'
+import { gql } from '../__generated__'
 import { Tour } from './Tour'
 
-const filterByRegion = (neighborhoods: Neighborhood[], regions: Region[]) =>
-  regions.length === 0
-    ? neighborhoods
-    : neighborhoods.filter(({ regionIds }) =>
-        regions.some((r) => regionIds.includes(r.id)),
-      )
-
-const getFeaturedTours = () => [...tours.values()].filter((t) => t.isFeatured)
+export const HOME_QUERY = gql(/* GraphQL */ `
+  query Home {
+    neighborhoods {
+      id
+      imageSrc
+      name
+      description
+      slug
+      regions {
+        id
+      }
+    }
+    tours {
+      id
+      distance
+      description
+      breweries {
+        id
+      }
+      name
+      isFeatured
+    }
+    regions {
+      id
+      name
+    }
+  }
+`)
 
 export const Home = () => {
-  const [filters, setFilters] = useState<Region[]>([])
-  const results = filterByRegion([...neighborhoods.values()], filters)
+  const [{ data }] = useQuery({ query: HOME_QUERY })
+  const { neighborhoods = [], tours = [], regions = [] } = data ?? {}
+
+  const featuredTours = tours.filter((t) => t.isFeatured)
+
+  const [filters, setFilters] = useState<string[]>([])
+  const matchingNeighborhoods =
+    filters.length > 0
+      ? neighborhoods.filter((neighborhood) => {
+          const regionIds = neighborhood.regions.map((r) => r.id)
+          return filters.some((filter) => regionIds.includes(filter))
+        })
+      : neighborhoods
 
   return (
     <div>
@@ -56,9 +88,14 @@ export const Home = () => {
         <Card variant="filled">
           <CardBody>
             <Wrap>
-              {getFeaturedTours().map((tour) => (
+              {featuredTours.map((tour) => (
                 <Box maxWidth="320px" key={tour.id}>
-                  <Tour tour={tour} />
+                  <Tour
+                    name={tour.name ?? ''}
+                    description={tour.description ?? ''}
+                    distance={tour.distance ?? 0}
+                    breweries={tour.breweries.length}
+                  />
                 </Box>
               ))}
             </Wrap>
@@ -73,15 +110,15 @@ export const Home = () => {
             <Button
               key={region.id}
               borderRadius="full"
-              colorScheme={filters.includes(region) ? 'orange' : 'gray'}
-              variant={filters.includes(region) ? 'solid' : 'outline'}
+              colorScheme={filters.includes(region.id) ? 'orange' : 'gray'}
+              variant={filters.includes(region.id) ? 'solid' : 'outline'}
               cursor="pointer"
               onClick={() => {
                 setFilters((prev) => {
-                  if (prev.includes(region)) {
-                    return prev.filter((f) => f !== region)
+                  if (prev.includes(region.id)) {
+                    return prev.filter((f) => f !== region.id)
                   }
-                  return prev.concat(region)
+                  return prev.concat(region.id)
                 })
               }}
             >
@@ -90,7 +127,7 @@ export const Home = () => {
           ))}
         </Wrap>
         <Stack px={4} spacing={6} divider={<StackDivider />}>
-          {results.length === 0 && (
+          {matchingNeighborhoods.length === 0 && (
             <Center pt="32">
               <Stack align="center" spacing={4}>
                 <Text fontSize="lg" color="gray.600">
@@ -107,32 +144,34 @@ export const Home = () => {
               </Stack>
             </Center>
           )}
-          {results.map(({ name, id, description, imageSrc, slug }) => (
-            <Card key={id} variant="unstyled">
-              <CardBody>
-                <Image
-                  src={imageSrc}
-                  alt={`Image of ${name}`}
-                  borderRadius="lg"
-                />
-                <Stack mt="6" spacing="3">
-                  <Heading as="h3" size="md" textTransform="capitalize">
-                    {name}
-                  </Heading>
-                  <Text>{description}</Text>
-                </Stack>
-              </CardBody>
-              <CardFooter justify="flex-end">
-                <Flex justifyContent="flex-end" mt={6}>
-                  <Link href={`/neighborhoods/${slug}`}>
-                    <Button colorScheme="gray" ml="auto">
-                      View Tours
-                    </Button>
-                  </Link>
-                </Flex>
-              </CardFooter>
-            </Card>
-          ))}
+          {matchingNeighborhoods.map(
+            ({ name, id, description, imageSrc, slug }) => (
+              <Card key={id} variant="unstyled">
+                <CardBody>
+                  <Image
+                    src={imageSrc ?? ''}
+                    alt={`Image of ${name}`}
+                    borderRadius="lg"
+                  />
+                  <Stack mt="6" spacing="3">
+                    <Heading as="h3" size="md" textTransform="capitalize">
+                      {name}
+                    </Heading>
+                    <Text>{description}</Text>
+                  </Stack>
+                </CardBody>
+                <CardFooter justify="flex-end">
+                  <Flex justifyContent="flex-end" mt={6}>
+                    <Link href={`/neighborhoods/${slug}`}>
+                      <Button colorScheme="gray" ml="auto">
+                        View Tours
+                      </Button>
+                    </Link>
+                  </Flex>
+                </CardFooter>
+              </Card>
+            ),
+          )}
         </Stack>
       </Container>
     </div>

@@ -13,27 +13,35 @@
     "@emotion/styled": "11.10.0",
     "@graphql-tools/schema": "^9.0.10",
     "@notionhq/client": "^2.2.2",
+    "@urql/exchange-execute": "^2.0.0",
     "framer-motion": "7.0.0",
+    "graphql": "^16.6.0",
     "graphql-tag": "^2.12.6",
     "lodash": "^4.17.21",
     "next": "^13.0.5",
+    "next-urql": "^4.0.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react-dom": "^18.2.0",
+    "react-is": "^18.2.0",
+    "urql": "^3.0.3"
   },
   "devDependencies": {
+    "@graphql-codegen/cli": "^2.15.0",
+    "@graphql-codegen/client-preset": "^1.2.1",
     "@types/node": "18.11.9",
     "@types/react": "17.0.20",
     "@types/react-dom": "17.0.9",
+    "concurrently": "^7.6.0",
     "eslint": "8.28.0",
     "eslint-config-next": "13.0.5",
     "eslint-plugin-simple-import-sort": "^8.0.0",
     "typescript": "^4.9.3"
   },
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "lint": "next lint",
-    "start": "next start"
+    "dev": "concurrently \"next dev\" \"graphql-codegen -w\"",
+    "build": "graphql-codegen && next build",
+    "lint": "graphql-codegen && next lint",
+    "start": "graphql-codegen && next start"
   },
   "browserslist": [
     ">0.2%",
