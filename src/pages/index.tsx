@@ -1,12 +1,5 @@
-import { executeExchange } from '@urql/exchange-execute'
 import { initUrqlClient, withUrqlClient } from 'next-urql'
-import {
-  cacheExchange,
-  dedupExchange,
-  fetchExchange,
-  ssrExchange,
-  useQuery,
-} from 'urql'
+import { cacheExchange, dedupExchange, fetchExchange, ssrExchange } from 'urql'
 import { API_URL } from '../app'
 import { Home, HOME_QUERY } from '../views/Home'
 
