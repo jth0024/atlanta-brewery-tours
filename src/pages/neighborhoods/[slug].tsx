@@ -1,8 +1,9 @@
+import { executeExchange } from '@urql/exchange-execute'
 import { GetStaticPropsContext } from 'next'
 import { useRouter } from 'next/router'
 import { initUrqlClient, withUrqlClient } from 'next-urql'
-import { cacheExchange, dedupExchange, fetchExchange, ssrExchange } from 'urql'
-import { API_URL } from '../../app'
+import { cacheExchange, dedupExchange, ssrExchange } from 'urql'
+import { API_URL, schema } from '../../app'
 import { Neighborhood, NEIGHBORHOOD_QUERY } from '../../views'
 
 export const getStaticPaths = async () => ({
@@ -17,7 +18,12 @@ export const getStaticProps = async (context: GetStaticPropsContext) => {
   const client = initUrqlClient(
     {
       url: API_URL,
-      exchanges: [dedupExchange, cacheExchange, ssrCache, fetchExchange],
+      exchanges: [
+        dedupExchange,
+        cacheExchange,
+        ssrCache,
+        executeExchange({ schema }),
+      ],
     },
     false,
   )

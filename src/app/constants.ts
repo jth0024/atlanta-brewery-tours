@@ -1,1 +1,1 @@
-export const API_URL = 'http://localhost:3000/api/graphql' as const
+export const API_URL = '/api/graphql' as const
