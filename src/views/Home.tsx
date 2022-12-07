@@ -86,7 +86,12 @@ interface StepProps {
 }
 
 const Step = ({ description, order }: StepProps) => (
-  <Flex alignItems="center" justifyContent="center" flexDirection="column">
+  <Stack
+    spacing={{ base: '8', sm: '4' }}
+    alignItems="center"
+    justifyContent={{ base: 'flex-start', sm: 'center' }}
+    direction={{ base: 'row', sm: 'column' }}
+  >
     <Circle
       size="12"
       padding="6"
@@ -96,10 +101,10 @@ const Step = ({ description, order }: StepProps) => (
     >
       <Heading size="xl">{order}</Heading>
     </Circle>
-    <Heading pt="4" fontWeight="bolder" size="md" textTransform="capitalize">
+    <Heading fontWeight="bolder" size="md" textTransform="capitalize">
       {description}
     </Heading>
-  </Flex>
+  </Stack>
 )
 
 export const Home = () => {
@@ -119,7 +124,7 @@ export const Home = () => {
 
   return (
     <div>
-      <Section textAlign="left" my="6">
+      <Section textAlign="left" py="16">
         <Heading as="h1" fontWeight="800" size="4xl" textTransform="capitalize">
           Atlanta Brewery Tours
         </Heading>
@@ -141,16 +146,22 @@ export const Home = () => {
         title="Atlanta Brewery Tours Map"
       />
       <Divider orientation="horizontal" />
-      <Stack spacing="12" py="6">
+      <Stack spacing="0" py="6">
         <Section textAlign="center">
           <Heading as="h2" size="xl">
             It&apos;s <i>so</i> easy to get started!
           </Heading>
-          <Flex py="12" alignItems="center" justifyContent="space-between">
+          <Stack
+            py="12"
+            spacing="4"
+            direction={{ base: 'column', sm: 'row' }}
+            alignItems={{ base: 'flex-start', sm: 'center' }}
+            justifyContent={{ base: 'center', sm: 'space-between' }}
+          >
             <Step order={1} description="Choose a tour" />
             <Step order={2} description="Enter your email" />
             <Step order={3} description="Receive your tour!" />
-          </Flex>
+          </Stack>
           <Button rightIcon={<ArrowForwardIcon />} colorScheme="orange">
             Find a Tour
           </Button>
@@ -159,8 +170,7 @@ export const Home = () => {
           <Heading
             textAlign="center"
             as="h2"
-            py="6"
-            px="4"
+            pb="6"
             size="xl"
             textTransform="capitalize"
           >
@@ -213,10 +223,10 @@ export const Home = () => {
         </Section>
       </Stack>
       <Section>
-        <Heading as="h2" py="6" px="4" size="xl" textTransform="capitalize">
+        <Heading as="h2" pb="6" size="xl" textTransform="capitalize">
           Explore Neighborhoods
         </Heading>
-        <Wrap px="3" pb="8">
+        <Wrap pb="8">
           {[...regions.values()].map((region) => (
             <Button
               key={region.id}
@@ -237,7 +247,7 @@ export const Home = () => {
             </Button>
           ))}
         </Wrap>
-        <Stack px={4} spacing={6} divider={<StackDivider />}>
+        <Stack spacing={6} divider={<StackDivider />}>
           {matchingNeighborhoods.length === 0 && (
             <Center pt="32">
               <Stack align="center" spacing={4}>
@@ -275,7 +285,11 @@ export const Home = () => {
                   <CardFooter justify="flex-end">
                     <Flex justifyContent="flex-end" mt={6}>
                       <Link href={`/neighborhoods/${slug}`}>
-                        <Button colorScheme="gray" ml="auto">
+                        <Button
+                          colorScheme="gray"
+                          ml="auto"
+                          rightIcon={<ArrowForwardIcon />}
+                        >
                           View Tours
                         </Button>
                       </Link>
