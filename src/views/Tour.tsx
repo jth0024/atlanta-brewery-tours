@@ -64,7 +64,7 @@ export const Tour = ({
           </ButtonGroup>
         </CardFooter>
       </Card>
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>
@@ -79,11 +79,10 @@ export const Tour = ({
               </CardBody>
             </Card>
             <Text mb="8">
-              Where should we send the info? Enter your email address below, and
-              we&apos;ll send a tour map to you!
+              Enter your email address below to receive your free tour guide!
             </Text>
             <FormControl>
-              <FormLabel>Email Address</FormLabel>
+              <FormLabel fontWeight="600">Email Address</FormLabel>
               <Input type="email" />
               <FormHelperText>
                 P.S. We will never share your email with 3rd parties
@@ -92,7 +91,7 @@ export const Tour = ({
           </ModalBody>
           <ModalFooter>
             <Button variant="ghost" onClick={onClose}>
-              No Thanks
+              Nevermind
             </Button>
           </ModalFooter>
         </ModalContent>

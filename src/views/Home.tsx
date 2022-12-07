@@ -27,9 +27,10 @@ import {
 } from '@chakra-ui/react'
 import Head from 'next/head'
 import Link from 'next/link'
-import { useState } from 'react'
+import { MutableRefObject, useRef, useState } from 'react'
 import { useQuery } from 'urql'
 import { gql } from '../__generated__'
+import { Slider } from '../components'
 import { Tour } from './Tour'
 
 export const HOME_QUERY = gql(/* GraphQL */ `
@@ -87,10 +88,10 @@ interface StepProps {
 
 const Step = ({ description, order }: StepProps) => (
   <Stack
-    spacing={{ base: '8', sm: '4' }}
+    spacing="4"
     alignItems="center"
-    justifyContent={{ base: 'flex-start', sm: 'center' }}
-    direction={{ base: 'row', sm: 'column' }}
+    justifyContent={{ base: 'center', sm: 'center' }}
+    direction={{ base: 'column', sm: 'column' }}
   >
     <Circle
       size="12"
@@ -101,13 +102,27 @@ const Step = ({ description, order }: StepProps) => (
     >
       <Heading size="xl">{order}</Heading>
     </Circle>
-    <Heading fontWeight="bolder" size="md" textTransform="capitalize">
+    <Heading
+      as="h3"
+      fontWeight="800"
+      size={{ base: 'xs', sm: 'sm' }}
+      textTransform="capitalize"
+    >
       {description}
     </Heading>
   </Stack>
 )
 
 export const Home = () => {
+  const popularToursRef = useRef<HTMLHeadingElement | null>(null)
+  const scrollIntoView = (ref: MutableRefObject<HTMLElement | null>) => {
+    if (ref.current) {
+      ref.current.scrollIntoView({
+        block: 'center',
+      })
+    }
+  }
+
   const [{ data }] = useQuery({ query: HOME_QUERY })
   const { neighborhoods = [], tours = [], regions = [] } = data ?? {}
 
@@ -148,21 +163,25 @@ export const Home = () => {
       <Divider orientation="horizontal" />
       <Stack spacing="0" py="6">
         <Section textAlign="center">
-          <Heading as="h2" size="xl">
-            It&apos;s <i>so</i> easy to get started!
+          <Heading as="h2" size="xl" textTransform="capitalize">
+            How it Works
           </Heading>
           <Stack
             py="12"
             spacing="4"
-            direction={{ base: 'column', sm: 'row' }}
-            alignItems={{ base: 'flex-start', sm: 'center' }}
-            justifyContent={{ base: 'center', sm: 'space-between' }}
+            direction={{ base: 'row', sm: 'row' }}
+            alignItems="center"
+            justifyContent="space-evenly"
           >
             <Step order={1} description="Choose a tour" />
             <Step order={2} description="Enter your email" />
             <Step order={3} description="Receive your tour!" />
           </Stack>
-          <Button rightIcon={<ArrowForwardIcon />} colorScheme="orange">
+          <Button
+            colorScheme="orange"
+            rightIcon={<ArrowForwardIcon />}
+            onClick={() => scrollIntoView(popularToursRef)}
+          >
             Find a Tour
           </Button>
         </Section>
@@ -170,19 +189,14 @@ export const Home = () => {
           <Heading
             textAlign="center"
             as="h2"
-            pb="6"
+            pb="12"
             size="xl"
             textTransform="capitalize"
+            ref={popularToursRef}
           >
             Popular Tours
           </Heading>
-          <HStack
-            spacing="4"
-            minHeight="400px"
-            alignItems="stretch"
-            justifyContent="flex-start"
-            overflowX="scroll"
-          >
+          <Slider>
             {featuredTours.map((tour) => (
               <Tour
                 key={tour.id}
@@ -195,31 +209,7 @@ export const Home = () => {
                 breweries={tour.breweries.length}
               />
             ))}
-          </HStack>
-          <HStack
-            pt="6"
-            spacing="4"
-            justifyContent="center"
-            alignItems="center"
-          >
-            <IconButton
-              aria-label="previous"
-              icon={<ArrowBackIcon />}
-              borderRadius="full"
-              variant="solid"
-            />
-            {Array(featuredTours.length)
-              .fill(0)
-              .map((_, i) => (
-                <Circle key={i} backgroundColor="gray.800" size="1" />
-              ))}
-            <IconButton
-              aria-label="next"
-              icon={<ArrowForwardIcon />}
-              borderRadius="full"
-              variant="solid"
-            />
-          </HStack>
+          </Slider>
         </Section>
       </Stack>
       <Section>
@@ -265,8 +255,14 @@ export const Home = () => {
               </Stack>
             </Center>
           )}
-          {matchingNeighborhoods.map(
-            ({ name, id, description, imageSrc, slug }) =>
+          {matchingNeighborhoods
+            .sort((a, b) =>
+              Math.sign(
+                -1 *
+                  ((a.description?.length ?? 0) - (b.description?.length ?? 0)),
+              ),
+            )
+            .map(({ name, id, description, imageSrc, slug }) =>
               imageSrc ? (
                 <Card key={id} variant="unstyled">
                   <CardBody>
@@ -297,7 +293,7 @@ export const Home = () => {
                   </CardFooter>
                 </Card>
               ) : null,
-          )}
+            )}
         </Stack>
       </Section>
     </div>
