@@ -71,6 +71,7 @@ const Section = ({ children, filled, ...boxProps }: SectionProps) => (
     as="section"
     backgroundColor={filled ? 'gray.100' : 'white'}
     py="12"
+    px="4"
     {...boxProps}
   >
     <Container maxW={['container.sm', 'container.sm', '768px']} padding="0px">
@@ -170,12 +171,13 @@ export const Home = () => {
             minHeight="400px"
             alignItems="stretch"
             justifyContent="flex-start"
-            position="relative"
+            overflowX="scroll"
           >
             {featuredTours.map((tour) => (
               <Tour
                 key={tour.id}
-                maxWidth="320px"
+                width="320px"
+                minWidth="320px"
                 alignSelf="stetch"
                 name={tour.name ?? ''}
                 description={tour.description ?? ''}
