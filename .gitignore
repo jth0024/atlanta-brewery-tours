@@ -3,3 +3,4 @@ node_modules
 .vercel
 .env.local
 __generated__
+.DS_Store

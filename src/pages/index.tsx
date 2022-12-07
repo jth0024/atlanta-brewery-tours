@@ -21,7 +21,7 @@ export const getStaticProps = async () => {
 
   // This query is used to populate the cache for the query
   // used on this page.
-  const result = await client?.query(HOME_QUERY, {}).toPromise()
+  await client?.query(HOME_QUERY, {}).toPromise()
 
   return {
     props: {

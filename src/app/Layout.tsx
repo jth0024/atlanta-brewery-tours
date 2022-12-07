@@ -1,4 +1,4 @@
-import { Box, Divider } from '@chakra-ui/react'
+import { Box } from '@chakra-ui/react'
 import React from 'react'
 import { Topbar } from './Topbar'
 
@@ -10,7 +10,6 @@ export const Layout = ({ children }: LayoutProps) => (
   <main>
     <Box position="sticky" top="0" zIndex="1">
       <Topbar />
-      <Divider orientation="horizontal" />
     </Box>
     {React.Children.only(children)}
   </main>

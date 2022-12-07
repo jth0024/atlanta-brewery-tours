@@ -1,9 +1,11 @@
+import '@fontsource/open-sans/variable.css'
+import '@fontsource/raleway/variable.css'
 import { extendTheme } from '@chakra-ui/react'
 import { dividerTheme } from './components'
 
 export const theme = extendTheme({
   config: {
-    useSystemColorMode: true,
+    useSystemColorMode: false,
   },
   colors: {
     orange: {
@@ -21,5 +23,9 @@ export const theme = extendTheme({
   },
   components: {
     Divider: dividerTheme,
+  },
+  fonts: {
+    body: `'Raleway', sans-serif`,
+    heading: `'Open Sans', sans-serif`,
   },
 })

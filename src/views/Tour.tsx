@@ -5,6 +5,7 @@ import {
   CardBody,
   CardFooter,
   CardHeader,
+  CardProps,
   FormControl,
   FormHelperText,
   FormLabel,
@@ -25,19 +26,25 @@ import {
 } from '@chakra-ui/react'
 import React from 'react'
 
-interface TourProps {
+interface TourProps extends CardProps {
   breweries: number
   description: string
   distance: number
   name: string
 }
 
-export const Tour = ({ breweries, description, distance, name }: TourProps) => {
+export const Tour = ({
+  breweries,
+  description,
+  distance,
+  name,
+  ...rest
+}: TourProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   return (
     <>
-      <Card variant="outline" backgroundColor="white">
+      <Card variant="outline" backgroundColor="white" {...rest}>
         <CardHeader>
           <Heading size="sm">{name}</Heading>
           <Spacer height="2" />

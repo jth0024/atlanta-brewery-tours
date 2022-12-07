@@ -1,21 +1,31 @@
+import { ArrowBackIcon, ArrowForwardIcon } from '@chakra-ui/icons'
 import {
   Box,
+  BoxProps,
   Button,
   Card,
   CardBody,
   CardFooter,
+  CardHeader,
   Center,
+  Circle,
   Container,
   Divider,
   Flex,
   Heading,
+  Highlight,
+  HStack,
+  IconButton,
   Image,
+  OrderedList,
   Spacer,
+  Square,
   Stack,
   StackDivider,
   Text,
   Wrap,
 } from '@chakra-ui/react'
+import Head from 'next/head'
 import Link from 'next/link'
 import { useState } from 'react'
 import { useQuery } from 'urql'
@@ -51,6 +61,46 @@ export const HOME_QUERY = gql(/* GraphQL */ `
   }
 `)
 
+interface SectionProps extends BoxProps {
+  children: React.ReactNode
+  filled?: boolean
+}
+
+const Section = ({ children, filled, ...boxProps }: SectionProps) => (
+  <Box
+    as="section"
+    backgroundColor={filled ? 'gray.100' : 'white'}
+    py="12"
+    {...boxProps}
+  >
+    <Container maxW={['container.sm', 'container.sm', '768px']} padding="0px">
+      {children}
+    </Container>
+  </Box>
+)
+
+interface StepProps {
+  description: string
+  order: number
+}
+
+const Step = ({ description, order }: StepProps) => (
+  <Flex alignItems="center" justifyContent="center" flexDirection="column">
+    <Circle
+      size="12"
+      padding="6"
+      borderRadius="full"
+      backgroundColor="gray.100"
+      flex="0 0 auto"
+    >
+      <Heading size="xl">{order}</Heading>
+    </Circle>
+    <Heading pt="4" fontWeight="bolder" size="md" textTransform="capitalize">
+      {description}
+    </Heading>
+  </Flex>
+)
+
 export const Home = () => {
   const [{ data }] = useQuery({ query: HOME_QUERY })
   const { neighborhoods = [], tours = [], regions = [] } = data ?? {}
@@ -68,41 +118,100 @@ export const Home = () => {
 
   return (
     <div>
+      <Section textAlign="left" my="6">
+        <Heading as="h1" fontWeight="800" size="4xl" textTransform="capitalize">
+          Atlanta Brewery Tours
+        </Heading>
+        <Text fontSize="xl" fontWeight="500" pt="4">
+          Atlanta Brewery Tours is a{' '}
+          <i>
+            <b>free</b>
+          </i>{' '}
+          self-guided tour service! We provide walking and scooter tours for
+          Atlanta&apos;s coolest brewery districts and neighborhoods.
+        </Text>
+      </Section>
       <Box
         as="iframe"
         src="https://snazzymaps.com/embed/413288"
         width="100%"
-        height={['300px', '500px']}
+        height="50vh"
         border="none"
         title="Atlanta Brewery Tours Map"
       />
       <Divider orientation="horizontal" />
-      <Container
-        maxW={['container.sm', 'container.sm', '768px']}
-        padding="0px"
-        py="6"
-      >
-        <Heading as="h2" py="6" px="4" size="lg" textTransform="capitalize">
-          Featured Tours
-        </Heading>
-        <Card variant="filled">
-          <CardBody>
-            <Wrap>
-              {featuredTours.map((tour) => (
-                <Box maxWidth="320px" key={tour.id}>
-                  <Tour
-                    name={tour.name ?? ''}
-                    description={tour.description ?? ''}
-                    distance={tour.distance ?? 0}
-                    breweries={tour.breweries.length}
-                  />
-                </Box>
+      <Stack spacing="12" py="6">
+        <Section textAlign="center">
+          <Heading as="h2" size="xl">
+            It&apos;s <i>so</i> easy to get started!
+          </Heading>
+          <Flex py="12" alignItems="center" justifyContent="space-between">
+            <Step order={1} description="Choose a tour" />
+            <Step order={2} description="Enter your email" />
+            <Step order={3} description="Receive your tour!" />
+          </Flex>
+          <Button rightIcon={<ArrowForwardIcon />} colorScheme="orange">
+            Find a Tour
+          </Button>
+        </Section>
+        <Section filled>
+          <Heading
+            textAlign="center"
+            as="h2"
+            py="6"
+            px="4"
+            size="xl"
+            textTransform="capitalize"
+          >
+            Popular Tours
+          </Heading>
+          <HStack
+            spacing="4"
+            minHeight="400px"
+            alignItems="stretch"
+            justifyContent="flex-start"
+            position="relative"
+          >
+            {featuredTours.map((tour) => (
+              <Tour
+                key={tour.id}
+                maxWidth="320px"
+                alignSelf="stetch"
+                name={tour.name ?? ''}
+                description={tour.description ?? ''}
+                distance={tour.distance ?? 0}
+                breweries={tour.breweries.length}
+              />
+            ))}
+          </HStack>
+          <HStack
+            pt="6"
+            spacing="4"
+            justifyContent="center"
+            alignItems="center"
+          >
+            <IconButton
+              aria-label="previous"
+              icon={<ArrowBackIcon />}
+              borderRadius="full"
+              variant="solid"
+            />
+            {Array(featuredTours.length)
+              .fill(0)
+              .map((_, i) => (
+                <Circle key={i} backgroundColor="gray.800" size="1" />
               ))}
-            </Wrap>
-          </CardBody>
-        </Card>
-        <Spacer height="6" />
-        <Heading as="h2" py="6" px="4" size="lg" textTransform="capitalize">
+            <IconButton
+              aria-label="next"
+              icon={<ArrowForwardIcon />}
+              borderRadius="full"
+              variant="solid"
+            />
+          </HStack>
+        </Section>
+      </Stack>
+      <Section>
+        <Heading as="h2" py="6" px="4" size="xl" textTransform="capitalize">
           Explore Neighborhoods
         </Heading>
         <Wrap px="3" pb="8">
@@ -145,35 +254,36 @@ export const Home = () => {
             </Center>
           )}
           {matchingNeighborhoods.map(
-            ({ name, id, description, imageSrc, slug }) => (
-              <Card key={id} variant="unstyled">
-                <CardBody>
-                  <Image
-                    src={imageSrc ?? ''}
-                    alt={`Image of ${name}`}
-                    borderRadius="lg"
-                  />
-                  <Stack mt="6" spacing="3">
-                    <Heading as="h3" size="md" textTransform="capitalize">
-                      {name}
-                    </Heading>
-                    <Text>{description}</Text>
-                  </Stack>
-                </CardBody>
-                <CardFooter justify="flex-end">
-                  <Flex justifyContent="flex-end" mt={6}>
-                    <Link href={`/neighborhoods/${slug}`}>
-                      <Button colorScheme="gray" ml="auto">
-                        View Tours
-                      </Button>
-                    </Link>
-                  </Flex>
-                </CardFooter>
-              </Card>
-            ),
+            ({ name, id, description, imageSrc, slug }) =>
+              imageSrc ? (
+                <Card key={id} variant="unstyled">
+                  <CardBody>
+                    <Image
+                      src={imageSrc ?? ''}
+                      alt={`Image of ${name}`}
+                      borderRadius="lg"
+                    />
+                    <Stack mt="6" spacing="3">
+                      <Heading as="h3" size="md" textTransform="capitalize">
+                        {name}
+                      </Heading>
+                      <Text>{description}</Text>
+                    </Stack>
+                  </CardBody>
+                  <CardFooter justify="flex-end">
+                    <Flex justifyContent="flex-end" mt={6}>
+                      <Link href={`/neighborhoods/${slug}`}>
+                        <Button colorScheme="gray" ml="auto">
+                          View Tours
+                        </Button>
+                      </Link>
+                    </Flex>
+                  </CardFooter>
+                </Card>
+              ) : null,
           )}
         </Stack>
-      </Container>
+      </Section>
     </div>
   )
 }

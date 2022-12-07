@@ -1,44 +1,46 @@
-import { Flex, Image, Link, Spacer } from "@chakra-ui/react";
-import NextLink from "next/link";
+import {
+  Button,
+  ButtonGroup,
+  Flex,
+  Image,
+  Link,
+  Spacer,
+} from '@chakra-ui/react'
+import NextLink from 'next/link'
 
-const logoSrc =
-  "http://lkh.669.myftpupload.com/wp-content/uploads/2022/07/ATLBrew-Logo500x500-trimmed.png";
+const logoSrc = '/images/logo-bug-500-x-500.png'
 
 export const Topbar = ({ ...rest }) => (
   <Flex
     as="header"
     backgroundColor="white"
     height="84px"
-    paddingLeft={["4", "6"]}
-    paddingRight={["4", "6"]}
+    paddingLeft="4"
+    paddingRight="4"
     paddingTop="0"
     paddingBottom="0"
-    flexDirection={["column", "row"]}
-    justifyContent={["center", "flex-start"]}
-    alignItems={["center", "center"]}
+    justifyContent="space-between"
+    alignItems="center"
     {...rest}
   >
     <Image
       objectFit="contain"
       src={logoSrc}
       alt="Atlanta Brewery Tours Logo"
-      marginLeft={["auto", 0]}
-      marginRight={["auto", 0]}
-      width={["120px", "150px"]}
+      width="60px"
+      borderRadius="full"
     />
-    <Spacer display={["block", "none"]} height="2" flex="0 0 auto" />
-    <Flex alignItems="center" marginLeft={[0, "auto"]} as="nav">
-      <Link as={NextLink} href="/" fontWeight="bold">
-        Home
-      </Link>
-      <Spacer width="32px" />
+    <Spacer display={['block', 'none']} height="2" flex="0 0 auto" />
+    <Flex alignItems="center" marginLeft={[0, 'auto']} as="nav">
       <Link as={NextLink} href="/about" fontWeight="bold">
-        About
+        Blog
       </Link>
-      <Spacer width="32px" />
+      <Spacer width={4} />
       <Link as={NextLink} href="/donate" fontWeight="bold">
-        Donate
+        Tours
       </Link>
+      <Spacer width={4} />
+      <Button colorScheme="orange">Buy Us a Beer</Button>
     </Flex>
   </Flex>
-);
+)
