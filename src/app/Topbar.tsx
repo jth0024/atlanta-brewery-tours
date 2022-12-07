@@ -1,44 +1,47 @@
-import { Flex, Image, Link, Spacer } from "@chakra-ui/react";
-import NextLink from "next/link";
+import { Box, Button, Flex, Image, Link, Spacer } from '@chakra-ui/react'
+import NextLink from 'next/link'
 
-const logoSrc =
-  "http://lkh.669.myftpupload.com/wp-content/uploads/2022/07/ATLBrew-Logo500x500-trimmed.png";
+const logoSrc = '/images/logo-bug-500-x-500.png'
 
 export const Topbar = ({ ...rest }) => (
   <Flex
     as="header"
     backgroundColor="white"
-    height="84px"
-    paddingLeft={["4", "6"]}
-    paddingRight={["4", "6"]}
-    paddingTop="0"
-    paddingBottom="0"
-    flexDirection={["column", "row"]}
-    justifyContent={["center", "flex-start"]}
-    alignItems={["center", "center"]}
+    height="96px"
+    px="4"
+    py="2"
+    justifyContent="stretch"
+    alignItems="stretch"
+    overflow="hidden"
     {...rest}
   >
-    <Image
-      objectFit="contain"
-      src={logoSrc}
-      alt="Atlanta Brewery Tours Logo"
-      marginLeft={["auto", 0]}
-      marginRight={["auto", 0]}
-      width={["120px", "150px"]}
-    />
-    <Spacer display={["block", "none"]} height="2" flex="0 0 auto" />
-    <Flex alignItems="center" marginLeft={[0, "auto"]} as="nav">
-      <Link as={NextLink} href="/" fontWeight="bold">
-        Home
-      </Link>
-      <Spacer width="32px" />
-      <Link as={NextLink} href="/about" fontWeight="bold">
-        About
-      </Link>
-      <Spacer width="32px" />
-      <Link as={NextLink} href="/donate" fontWeight="bold">
-        Donate
-      </Link>
+    <Flex
+      flex="1 1 auto"
+      justifyContent="space-between"
+      alignItems="center"
+      overflow="hidden"
+    >
+      <Box href="/" as={NextLink} height="100%">
+        <Image
+          objectFit="contain"
+          src={logoSrc}
+          alt="Atlanta Brewery Tours Logo"
+          height="100%"
+          borderRadius="full"
+        />
+      </Box>
+      <Spacer display={['block', 'none']} height="2" flex="0 0 auto" />
+      <Flex alignItems="center" marginLeft={[0, 'auto']} as="nav">
+        <Link as={NextLink} href="/blog" fontWeight="bold">
+          Blog
+        </Link>
+        <Spacer width={4} />
+        <Link as={NextLink} href="/tours" fontWeight="bold">
+          Tours
+        </Link>
+        <Spacer width={4} />
+        <Button colorScheme="orange">Buy Us a Beer</Button>
+      </Flex>
     </Flex>
   </Flex>
-);
+)

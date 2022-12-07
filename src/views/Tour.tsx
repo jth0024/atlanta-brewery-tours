@@ -5,6 +5,7 @@ import {
   CardBody,
   CardFooter,
   CardHeader,
+  CardProps,
   FormControl,
   FormHelperText,
   FormLabel,
@@ -25,19 +26,25 @@ import {
 } from '@chakra-ui/react'
 import React from 'react'
 
-interface TourProps {
+interface TourProps extends CardProps {
   breweries: number
   description: string
   distance: number
   name: string
 }
 
-export const Tour = ({ breweries, description, distance, name }: TourProps) => {
+export const Tour = ({
+  breweries,
+  description,
+  distance,
+  name,
+  ...rest
+}: TourProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
 
   return (
     <>
-      <Card variant="outline" backgroundColor="white">
+      <Card variant="outline" backgroundColor="white" {...rest}>
         <CardHeader>
           <Heading size="sm">{name}</Heading>
           <Spacer height="2" />
@@ -57,7 +64,7 @@ export const Tour = ({ breweries, description, distance, name }: TourProps) => {
           </ButtonGroup>
         </CardFooter>
       </Card>
-      <Modal isOpen={isOpen} onClose={onClose}>
+      <Modal isOpen={isOpen} onClose={onClose} isCentered>
         <ModalOverlay />
         <ModalContent>
           <ModalHeader>
@@ -72,11 +79,10 @@ export const Tour = ({ breweries, description, distance, name }: TourProps) => {
               </CardBody>
             </Card>
             <Text mb="8">
-              Where should we send the info? Enter your email address below, and
-              we&apos;ll send a tour map to you!
+              Enter your email address below to receive your free tour guide!
             </Text>
             <FormControl>
-              <FormLabel>Email Address</FormLabel>
+              <FormLabel fontWeight="600">Email Address</FormLabel>
               <Input type="email" />
               <FormHelperText>
                 P.S. We will never share your email with 3rd parties
@@ -85,7 +91,7 @@ export const Tour = ({ breweries, description, distance, name }: TourProps) => {
           </ModalBody>
           <ModalFooter>
             <Button variant="ghost" onClick={onClose}>
-              No Thanks
+              Nevermind
             </Button>
           </ModalFooter>
         </ModalContent>
