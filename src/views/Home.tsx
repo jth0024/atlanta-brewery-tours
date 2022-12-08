@@ -228,7 +228,7 @@ export const Home = () => {
             </Button>
           ))}
         </Wrap>
-        <Stack spacing={6} divider={<StackDivider />}>
+        <Stack spacing={6}>
           {filteredTours.length === 0 ? (
             <Center alignSelf="stretch" minHeight="320px">
               <Stack align="center" spacing={4}>
