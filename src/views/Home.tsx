@@ -16,8 +16,8 @@ import {
 import { intersection } from 'lodash'
 import React, { MutableRefObject, useRef, useState } from 'react'
 import { useQuery } from 'urql'
-import { Slider } from '@/lib'
 import { gql } from '../__generated__'
+import { Slider } from '../lib'
 import { Tour } from './Tour'
 
 export const HOME_QUERY = gql(/* GraphQL */ `
