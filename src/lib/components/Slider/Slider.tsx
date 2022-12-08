@@ -11,11 +11,11 @@ export const Slider = ({ children, ...rest }: SliderProps) => {
   const [activeIdx, setActiveIdx] = useState(0)
 
   const handlePrevClick = useCallback(() => {
-    setActiveIdx((prev) => Math.max(prev - 1, 0))
+    setActiveIdx(prev => Math.max(prev - 1, 0))
   }, [setActiveIdx])
 
   const handleNextClick = useCallback(() => {
-    setActiveIdx((prev) => Math.min(prev + 1, items.length))
+    setActiveIdx(prev => Math.min(prev + 1, items.length))
   }, [setActiveIdx, items.length])
 
   const scrollContainerRef = useRef<HTMLDivElement | null>(null)
@@ -41,8 +41,8 @@ export const Slider = ({ children, ...rest }: SliderProps) => {
         ref={scrollContainerRef}
       >
         {items.map((item, i) => (
+          // eslint-disable-next-line react/jsx-key
           <Box
-            key={i}
             data-idx={i}
             alignSelf="stretch"
             display="flex"
@@ -63,8 +63,8 @@ export const Slider = ({ children, ...rest }: SliderProps) => {
           disabled={activeIdx === 0}
         />
         {items.map((_, i) => (
+          // eslint-disable-next-line react/jsx-key
           <Circle
-            key={i}
             backgroundColor={i === activeIdx ? 'gray.800' : 'gray.300'}
             size="1"
           />

@@ -1,7 +1,7 @@
 import '@fontsource/open-sans/variable.css'
 import '@fontsource/raleway/variable.css'
 import { extendTheme } from '@chakra-ui/react'
-import { dividerTheme } from './components'
+import { containerTheme, dividerTheme } from './components'
 
 export const theme = extendTheme({
   config: {
@@ -23,6 +23,7 @@ export const theme = extendTheme({
   },
   components: {
     Divider: dividerTheme,
+    Container: containerTheme,
   },
   fonts: {
     body: `'Raleway', sans-serif`,

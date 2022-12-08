@@ -36,7 +36,7 @@ export const Topbar = ({ ...rest }) => (
           Blog
         </Link>
         <Spacer width={4} />
-        <Link as={NextLink} href="/tours" fontWeight="bold">
+        <Link as={NextLink} href="/#tours" fontWeight="bold">
           Tours
         </Link>
         <Spacer width={4} />

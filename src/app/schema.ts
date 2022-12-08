@@ -1,3 +1,4 @@
+/* eslint-disable no-underscore-dangle */
 import { makeExecutableSchema } from '@graphql-tools/schema'
 import { Client, isFullPage } from '@notionhq/client'
 import {
@@ -22,12 +23,12 @@ const typeDefs = gql`
 
   type Query {
     breweries: [Brewery!]!
-    brewery(id: ID): Brewery
+    brewery(id: ID!): Brewery
     neighborhoods(filter: NeighborhoodsInput): [Neighborhood!]!
-    neighborhood(id: ID): Neighborhood
+    neighborhood(id: ID!): Neighborhood
     regions: [Region!]!
     tours: [Tour!]!
-    tour(id: ID): Tour
+    tour(id: ID!): Tour
   }
 
   type Brewery {
@@ -70,16 +71,16 @@ const getNumber = (response: GetPageResponse, field: string): number =>
   get(response, ['properties', field, 'number'], 0)
 const getRichText = (response: GetPageResponse, field: string): string =>
   get(response, ['properties', field, 'rich_text'], [])
-    .map(({ plain_text }: { plain_text: string }) => plain_text)
+    .map(({ plain_text: plainText }: { plain_text: string }) => plainText)
     .join(' ')
 const getTitle = (response: GetPageResponse, field: string): string =>
   get(response, ['properties', field, 'title'], [])
-    .map(({ plain_text }: { plain_text: string }) => plain_text)
+    .map(({ plain_text: plainText }: { plain_text: string }) => plainText)
     .join(' ')
 
 const queryDatabase = async (
   id: string,
-  mapper: (response: GetPageResponse) => any,
+  mapper: (response: GetPageResponse) => unknown,
   filter?: QueryDatabaseParameters['filter'],
 ) => {
   const { results } = await client.databases.query({
@@ -91,7 +92,7 @@ const queryDatabase = async (
 
 const retrievePage = async (
   id: string,
-  mapper: (response: GetPageResponse) => any,
+  mapper: (response: GetPageResponse) => unknown,
 ) => {
   const result = await client.pages.retrieve({ page_id: id })
   return mapper(result)
@@ -100,14 +101,14 @@ const retrievePage = async (
 const retrieveRelation = async (
   pageId: string,
   propertyId: string,
-  mapper: (response: GetPageResponse) => any,
+  mapper: (response: GetPageResponse) => unknown,
 ) => {
   const property = await client.pages.properties.retrieve({
     page_id: pageId,
     property_id: propertyId,
   })
   const pages = await Promise.all(
-    get(property, 'results', []).map((result) =>
+    get(property, 'results', []).map(result =>
       client.pages.retrieve({
         page_id: get(result, 'relation.id', ''),
       }),
@@ -148,16 +149,16 @@ const toTour = (response: GetPageResponse) => ({
 
 const resolvers = {
   Query: {
-    async brewery(_: any, args: { id: string }) {
+    async brewery(_: null, args: { id: string }) {
       return retrievePage(args.id, toBrewery)
     },
     async breweries() {
       return queryDatabase(breweriesDB, toBrewery)
     },
-    async neighborhood(_: any, args: { id: string }) {
+    async neighborhood(_: null, args: { id: string }) {
       return retrievePage(args.id, toNeighborhood)
     },
-    async neighborhoods(_: any, args: { filter?: { slug?: string } }) {
+    async neighborhoods(_: null, args: { filter?: { slug?: string } }) {
       const filter = args.filter?.slug
         ? {
             property: 'Slug',
@@ -171,7 +172,7 @@ const resolvers = {
     async regions() {
       return queryDatabase(regionsDB, toRegion)
     },
-    async tour(_: any, args: { id: string }) {
+    async tour(_: GetPageResponse, args: { id: string }) {
       return retrievePage(args.id, toTour)
     },
     async tours() {
