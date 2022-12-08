@@ -27,6 +27,7 @@ import {
 import React from 'react'
 import { useQuery } from 'urql'
 import { gql } from '../__generated__'
+import { pluralize } from '../lib'
 
 export const TOUR_QUERY = gql(/* GraphQL */ `
   query Tour($id: ID!) {
@@ -67,7 +68,9 @@ export const Tour = ({ id, ...rest }: TourProps) => {
           <Heading size="sm">{tour?.name ?? ''}</Heading>
           <Spacer height="2" />
           <HStack>
-            <Tag>{`${tour?.breweries?.length ?? 0} Stops`}</Tag>
+            <Tag>
+              {pluralize(tour?.breweries?.length ?? 0, 'stop', 'stops')}
+            </Tag>
             <Tag>{`${tour?.distance ?? 0} miles`}</Tag>
           </HStack>
         </CardHeader>
