@@ -6,11 +6,9 @@ import { theme } from './theme'
 interface AppProps {
   children: React.ReactNode
 }
-export const App = ({ children }: AppProps) => {
+export const App = ({ children }: AppProps) => (
   // 2. Wrap ChakraProvider at the root of your app
-  return (
-    <ChakraProvider theme={theme}>
-      <Layout>{children}</Layout>
-    </ChakraProvider>
-  )
-}
+  <ChakraProvider theme={theme}>
+    <Layout>{children}</Layout>
+  </ChakraProvider>
+)
