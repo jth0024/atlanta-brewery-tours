@@ -32,9 +32,7 @@ export const getStaticProps = async () => {
   }
 }
 
-const HomePage = () => {
-  return <Home />
-}
+const HomePage = () => <Home />
 
 export default withUrqlClient(() => ({
   url: API_URL,

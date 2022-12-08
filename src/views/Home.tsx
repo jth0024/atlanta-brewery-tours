@@ -1,50 +1,27 @@
-import { ArrowBackIcon, ArrowForwardIcon } from '@chakra-ui/icons'
+import { ArrowForwardIcon } from '@chakra-ui/icons'
 import {
   Box,
   BoxProps,
   Button,
-  Card,
-  CardBody,
-  CardFooter,
-  CardHeader,
   Center,
   Circle,
   Container,
   Divider,
-  Flex,
   Heading,
-  Highlight,
-  HStack,
-  IconButton,
-  Image,
-  OrderedList,
-  Spacer,
-  Square,
   Stack,
   StackDivider,
   Text,
   Wrap,
 } from '@chakra-ui/react'
-import Head from 'next/head'
-import Link from 'next/link'
-import { MutableRefObject, useRef, useState } from 'react'
+import { intersection } from 'lodash'
+import React, { MutableRefObject, useRef, useState } from 'react'
 import { useQuery } from 'urql'
+import { Slider } from '@/lib'
 import { gql } from '../__generated__'
-import { Slider } from '../components'
 import { Tour } from './Tour'
 
 export const HOME_QUERY = gql(/* GraphQL */ `
   query Home {
-    neighborhoods {
-      id
-      imageSrc
-      name
-      description
-      slug
-      regions {
-        id
-      }
-    }
     tours {
       id
       distance
@@ -54,6 +31,13 @@ export const HOME_QUERY = gql(/* GraphQL */ `
       }
       name
       isFeatured
+      neighborhood {
+        id
+        name
+        regions {
+          id
+        }
+      }
     }
     regions {
       id
@@ -65,9 +49,15 @@ export const HOME_QUERY = gql(/* GraphQL */ `
 interface SectionProps extends BoxProps {
   children: React.ReactNode
   filled?: boolean
+  size?: string | { [key: string]: string }
 }
 
-const Section = ({ children, filled, ...boxProps }: SectionProps) => (
+const Section = ({
+  children,
+  filled = false,
+  size = { base: 'sm', md: 'md' },
+  ...boxProps
+}: SectionProps) => (
   <Box
     as="section"
     backgroundColor={filled ? 'gray.100' : 'white'}
@@ -75,7 +65,7 @@ const Section = ({ children, filled, ...boxProps }: SectionProps) => (
     px="4"
     {...boxProps}
   >
-    <Container maxW={['container.sm', 'container.sm', '768px']} padding="0px">
+    <Container size={size} padding="0px">
       {children}
     </Container>
   </Box>
@@ -124,18 +114,20 @@ export const Home = () => {
   }
 
   const [{ data }] = useQuery({ query: HOME_QUERY })
-  const { neighborhoods = [], tours = [], regions = [] } = data ?? {}
-
-  const featuredTours = tours.filter((t) => t.isFeatured)
+  const { tours = [], regions = [] } = data ?? {}
 
   const [filters, setFilters] = useState<string[]>([])
-  const matchingNeighborhoods =
+  const featuredTours = tours.filter(t => t.isFeatured)
+  const filteredTours =
     filters.length > 0
-      ? neighborhoods.filter((neighborhood) => {
-          const regionIds = neighborhood.regions.map((r) => r.id)
-          return filters.some((filter) => regionIds.includes(filter))
-        })
-      : neighborhoods
+      ? tours.filter(
+          ({ neighborhood }) =>
+            intersection(
+              neighborhood?.regions?.map(({ id }) => id),
+              filters,
+            ).length > 0,
+        )
+      : tours
 
   return (
     <div>
@@ -185,7 +177,7 @@ export const Home = () => {
             Find a Tour
           </Button>
         </Section>
-        <Section filled>
+        <Section filled size={{ base: 'sm', md: 'md', lg: 'lg' }}>
           <Heading
             textAlign="center"
             as="h2"
@@ -197,27 +189,26 @@ export const Home = () => {
             Popular Tours
           </Heading>
           <Slider>
-            {featuredTours.map((tour) => (
+            {featuredTours.map(({ id }) => (
               <Tour
-                key={tour.id}
-                width="320px"
-                minWidth="320px"
-                alignSelf="stetch"
-                name={tour.name ?? ''}
-                description={tour.description ?? ''}
-                distance={tour.distance ?? 0}
-                breweries={tour.breweries.length}
+                key={id}
+                id={id}
+                sx={{
+                  width: '320px',
+                  minWidth: '320px',
+                  alignSelf: 'stetch',
+                }}
               />
             ))}
           </Slider>
         </Section>
       </Stack>
       <Section>
-        <Heading as="h2" pb="6" size="xl" textTransform="capitalize">
+        <Heading as="h2" pb="6" size="xl" textTransform="capitalize" id="tours">
           Explore Neighborhoods
         </Heading>
         <Wrap pb="8">
-          {[...regions.values()].map((region) => (
+          {regions.map(region => (
             <Button
               key={region.id}
               borderRadius="full"
@@ -225,9 +216,9 @@ export const Home = () => {
               variant={filters.includes(region.id) ? 'solid' : 'outline'}
               cursor="pointer"
               onClick={() => {
-                setFilters((prev) => {
+                setFilters(prev => {
                   if (prev.includes(region.id)) {
-                    return prev.filter((f) => f !== region.id)
+                    return prev.filter(f => f !== region.id)
                   }
                   return prev.concat(region.id)
                 })
@@ -238,62 +229,30 @@ export const Home = () => {
           ))}
         </Wrap>
         <Stack spacing={6} divider={<StackDivider />}>
-          {matchingNeighborhoods.length === 0 && (
-            <Center pt="32">
+          {filteredTours.length === 0 ? (
+            <Center alignSelf="stretch" minHeight="320px">
               <Stack align="center" spacing={4}>
-                <Text fontSize="lg" color="gray.600">
-                  Darn! There aren&apos;t any neighborhoods matching your
-                  filters.&nbsp;
+                <Text
+                  textAlign="center"
+                  fontSize="lg"
+                  color="gray.600"
+                  maxW="container.sm"
+                >
+                  Darn! There aren&apos;t any tours matching your filters. Want
+                  to try something else?&nbsp;
                 </Text>
                 <Button
                   colorScheme="orange"
                   variant="link"
                   onClick={() => setFilters([])}
                 >
-                  Remove Filters
+                  Clear Filters
                 </Button>
               </Stack>
             </Center>
+          ) : (
+            filteredTours.map(({ id }) => <Tour key={id} id={id} />)
           )}
-          {matchingNeighborhoods
-            .sort((a, b) =>
-              Math.sign(
-                -1 *
-                  ((a.description?.length ?? 0) - (b.description?.length ?? 0)),
-              ),
-            )
-            .map(({ name, id, description, imageSrc, slug }) =>
-              imageSrc ? (
-                <Card key={id} variant="unstyled">
-                  <CardBody>
-                    <Image
-                      src={imageSrc ?? ''}
-                      alt={`Image of ${name}`}
-                      borderRadius="lg"
-                    />
-                    <Stack mt="6" spacing="3">
-                      <Heading as="h3" size="md" textTransform="capitalize">
-                        {name}
-                      </Heading>
-                      <Text>{description}</Text>
-                    </Stack>
-                  </CardBody>
-                  <CardFooter justify="flex-end">
-                    <Flex justifyContent="flex-end" mt={6}>
-                      <Link href={`/neighborhoods/${slug}`}>
-                        <Button
-                          colorScheme="gray"
-                          ml="auto"
-                          rightIcon={<ArrowForwardIcon />}
-                        >
-                          View Tours
-                        </Button>
-                      </Link>
-                    </Flex>
-                  </CardFooter>
-                </Card>
-              ) : null,
-            )}
         </Stack>
       </Section>
     </div>
