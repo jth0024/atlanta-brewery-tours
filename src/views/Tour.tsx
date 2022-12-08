@@ -76,7 +76,7 @@ export const Tour = ({ id, ...rest }: TourProps) => {
         </CardBody>
         <CardFooter justifyContent="flex-end">
           <ButtonGroup>
-            <Button colorScheme="orange" onClick={onOpen}>
+            <Button colorScheme="gray" onClick={onOpen}>
               Take This Tour
             </Button>
           </ButtonGroup>
