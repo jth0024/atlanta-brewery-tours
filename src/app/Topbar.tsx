@@ -1,11 +1,10 @@
-import { Box, Button, Flex, Image, Link, Spacer } from '@chakra-ui/react'
+import { Button, Flex, Link, Spacer } from '@chakra-ui/react'
 import NextLink from 'next/link'
-
-const logoSrc = '/images/logo-bug-500-x-500.png'
+import { Logo } from './Logo'
 
 export const Topbar = ({ ...rest }) => (
   <Flex
-    as="header"
+    as="nav"
     backgroundColor="white"
     height="96px"
     px="4"
@@ -21,15 +20,7 @@ export const Topbar = ({ ...rest }) => (
       alignItems="center"
       overflow="hidden"
     >
-      <Box href="/" as={NextLink} height="100%">
-        <Image
-          objectFit="contain"
-          src={logoSrc}
-          alt="Atlanta Brewery Tours Logo"
-          height="100%"
-          borderRadius="full"
-        />
-      </Box>
+      <Logo as={NextLink} href="/" height="100%" />
       <Spacer display={['block', 'none']} height="2" flex="0 0 auto" />
       <Flex alignItems="center" marginLeft={[0, 'auto']} as="nav">
         <Link as={NextLink} href="/blog" fontWeight="bold">

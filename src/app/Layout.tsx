@@ -1,5 +1,6 @@
-import { Box } from '@chakra-ui/react'
+import { Box, Divider } from '@chakra-ui/react'
 import React from 'react'
+import { Footer } from './Footer'
 import { Topbar } from './Topbar'
 
 interface LayoutProps {
@@ -7,10 +8,12 @@ interface LayoutProps {
 }
 
 export const Layout = ({ children }: LayoutProps) => (
-  <main>
+  <div>
     <Box position="sticky" top="0" zIndex="1">
       <Topbar />
     </Box>
-    {React.Children.only(children)}
-  </main>
+    <main>{React.Children.only(children)}</main>
+    <Divider />
+    <Footer />
+  </div>
 )
