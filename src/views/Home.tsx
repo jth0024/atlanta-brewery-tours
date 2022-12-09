@@ -55,7 +55,7 @@ interface SectionProps extends BoxProps {
 const Section = ({
   children,
   filled = false,
-  size = { base: 'sm', md: 'md' },
+  size = { base: 'sm', lg: 'md' },
   ...boxProps
 }: SectionProps) => (
   <Box
