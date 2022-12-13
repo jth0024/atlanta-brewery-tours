@@ -1,6 +1,7 @@
 import { ChakraProvider } from '@chakra-ui/react'
 import React from 'react'
 import { Layout } from './Layout'
+import { GoogleTagManager } from './scripts'
 import { theme } from './theme'
 
 interface AppProps {
@@ -9,6 +10,7 @@ interface AppProps {
 export const App = ({ children }: AppProps) => (
   // 2. Wrap ChakraProvider at the root of your app
   <ChakraProvider theme={theme}>
+    <GoogleTagManager />
     <Layout>{children}</Layout>
   </ChakraProvider>
 )
