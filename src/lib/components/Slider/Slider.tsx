@@ -41,8 +41,9 @@ export const Slider = ({ children, ...rest }: SliderProps) => {
         ref={scrollContainerRef}
       >
         {items.map((item, i) => (
-          // eslint-disable-next-line react/jsx-key
           <Box
+            // eslint-disable-next-line react/no-array-index-key
+            key={i}
             data-idx={i}
             alignSelf="stretch"
             display="flex"
@@ -63,8 +64,9 @@ export const Slider = ({ children, ...rest }: SliderProps) => {
           disabled={activeIdx === 0}
         />
         {items.map((_, i) => (
-          // eslint-disable-next-line react/jsx-key
           <Circle
+            // eslint-disable-next-line react/no-array-index-key
+            key={i}
             backgroundColor={i === activeIdx ? 'gray.800' : 'gray.300'}
             size="1"
           />
