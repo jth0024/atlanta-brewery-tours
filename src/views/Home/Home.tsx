@@ -1,24 +1,27 @@
 import { ArrowForwardIcon } from '@chakra-ui/icons'
 import {
   Box,
-  BoxProps,
   Button,
   Center,
-  Circle,
-  Container,
   Divider,
   Heading,
   Stack,
-  StackDivider,
   Text,
   Wrap,
 } from '@chakra-ui/react'
 import { intersection } from 'lodash'
-import React, { MutableRefObject, useRef, useState } from 'react'
+import React, {
+  MutableRefObject,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import { useQuery } from 'urql'
-import { gql } from '../__generated__'
-import { Slider } from '../lib'
-import { Tour } from './Tour'
+import { gql } from '../../__generated__'
+import { Section, Slider } from '../../lib'
+import { Step } from './Step'
+import { TourCard } from './TourCard'
 
 export const HOME_QUERY = gql(/* GraphQL */ `
   query Home {
@@ -46,72 +49,25 @@ export const HOME_QUERY = gql(/* GraphQL */ `
   }
 `)
 
-interface SectionProps extends BoxProps {
-  children: React.ReactNode
-  filled?: boolean
-  size?: string | { [key: string]: string }
-}
-
-const Section = ({
-  children,
-  filled = false,
-  size = { base: 'sm', lg: 'md' },
-  ...boxProps
-}: SectionProps) => (
-  <Box
-    as="section"
-    backgroundColor={filled ? 'gray.100' : 'white'}
-    py="12"
-    px="4"
-    {...boxProps}
-  >
-    <Container size={size} padding="0px">
-      {children}
-    </Container>
-  </Box>
-)
-
-interface StepProps {
-  description: string
-  order: number
-}
-
-const Step = ({ description, order }: StepProps) => (
-  <Stack
-    spacing="4"
-    alignItems="center"
-    justifyContent={{ base: 'center', sm: 'center' }}
-    direction={{ base: 'column', sm: 'column' }}
-  >
-    <Circle
-      size="12"
-      padding="6"
-      borderRadius="full"
-      backgroundColor="gray.100"
-      flex="0 0 auto"
-    >
-      <Heading size="xl">{order}</Heading>
-    </Circle>
-    <Heading
-      as="h3"
-      fontWeight="800"
-      size={{ base: 'xs', sm: 'sm' }}
-      textTransform="capitalize"
-    >
-      {description}
-    </Heading>
-  </Stack>
-)
-
 export const Home = () => {
-  const popularToursRef = useRef<HTMLHeadingElement | null>(null)
-  const scrollIntoView = (ref: MutableRefObject<HTMLElement | null>) => {
-    if (ref.current) {
-      ref.current.scrollIntoView({
-        block: 'center',
-      })
-    }
-  }
+  // const popularToursRef = useRef<HTMLHeadingElement | null>(null)
+  const topRef = useRef<HTMLDivElement | null>(null)
+  const scrollIntoView = useCallback(
+    (ref: MutableRefObject<HTMLElement | null>) => {
+      if (ref.current) {
+        ref.current.scrollIntoView({
+          block: 'center',
+        })
+      }
+    },
+    [],
+  )
+
+  // TODO: for some reason the page always loads partially scrolled down,
+  // so this is a quick fix to scroll back to the top
+  useEffect(() => {
+    scrollIntoView(topRef)
+  }, [scrollIntoView])
 
   const [{ data }] = useQuery({ query: HOME_QUERY })
   const { tours = [], regions = [] } = data ?? {}
@@ -131,6 +87,7 @@ export const Home = () => {
 
   return (
     <div>
+      <div ref={topRef} />
       <Section textAlign="left" py="16">
         <Heading as="h1" fontWeight="800" size="4xl" textTransform="capitalize">
           Atlanta Brewery Tours
@@ -172,7 +129,7 @@ export const Home = () => {
           <Button
             colorScheme="orange"
             rightIcon={<ArrowForwardIcon />}
-            onClick={() => scrollIntoView(popularToursRef)}
+            // onClick={() => scrollIntoView(popularToursRef)}
           >
             Find a Tour
           </Button>
@@ -184,13 +141,13 @@ export const Home = () => {
             pb="12"
             size="xl"
             textTransform="capitalize"
-            ref={popularToursRef}
+            // ref={popularToursRef}
           >
             Popular Tours
           </Heading>
           <Slider>
             {featuredTours.map(({ id }) => (
-              <Tour
+              <TourCard
                 key={id}
                 id={id}
                 sx={{
@@ -251,7 +208,7 @@ export const Home = () => {
               </Stack>
             </Center>
           ) : (
-            filteredTours.map(({ id }) => <Tour key={id} id={id} />)
+            filteredTours.map(({ id }) => <TourCard key={id} id={id} />)
           )}
         </Stack>
       </Section>

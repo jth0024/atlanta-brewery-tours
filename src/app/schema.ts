@@ -35,6 +35,7 @@ const typeDefs = gql`
     id: ID!
     name: String
     neighborhood: Neighborhood
+    address: String
   }
 
   type Neighborhood {
@@ -53,7 +54,9 @@ const typeDefs = gql`
     breweries: [Brewery!]!
     description: String
     distance: Float
+    emailTemplateID: String
     neighborhood: Neighborhood
+    googleMapsLink: String
   }
 
   type Region {
@@ -121,6 +124,7 @@ const toBrewery = (response: GetPageResponse) => ({
   _neighborhoodId: get(response, 'properties.Neighborhood.id', ''),
   id: getId(response),
   name: getTitle(response, 'Name'),
+  address: getRichText(response, 'Address'),
 })
 
 const toNeighborhood = (response: GetPageResponse) => ({
@@ -145,6 +149,8 @@ const toTour = (response: GetPageResponse) => ({
   isFeatured: getCheckbox(response, 'Featured'),
   name: getTitle(response, 'Name'),
   distance: getNumber(response, 'Distance'),
+  emailTemplateID: getRichText(response, 'Email Template ID'),
+  googleMapsLink: getRichText(response, 'Google Maps Link'),
 })
 
 const resolvers = {
