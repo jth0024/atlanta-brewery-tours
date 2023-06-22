@@ -12,8 +12,8 @@ import {
 } from '@chakra-ui/react'
 import NextLink from 'next/link'
 import { useQuery } from 'urql'
-import { gql } from '../__generated__'
-import { Tour } from './Tour'
+import { gql } from '../../__generated__'
+import { TourCard } from '../Home/TourCard'
 
 export const NEIGHBORHOOD_QUERY = gql(/* GraphQL */ `
   query Neighborhood($slug: String!) {
@@ -88,7 +88,7 @@ export const Neighborhood = ({ slug }: NeighborhoodProps) => {
           </Center>
         )}
         {matchingTours.map(({ id }) => (
-          <Tour key={id} id={id} />
+          <TourCard key={id} id={id} />
         ))}
       </Stack>
     </Container>
