@@ -9,6 +9,7 @@ import { gql } from 'graphql-tag'
 import { get } from 'lodash'
 
 const auth = process.env.NOTION_API_KEY ?? ''
+const hubspotToken = process.env.HUBSPOT_ACCESS_TOKEN ?? ''
 const toursDB = process.env.NOTION_TOURS_DATABASE_ID ?? ''
 const regionsDB = process.env.NOTION_REGIONS_DATABASE_ID ?? ''
 const breweriesDB = process.env.NOTION_BREWERIES_DATABASE_ID ?? ''
@@ -17,6 +18,22 @@ const neighborhoodsDB = process.env.NOTION_NEIGHBORHOODS_DATABASE_ID ?? ''
 export const client = new Client({ auth })
 
 const typeDefs = gql`
+  input TakeTourInput {
+    firstName: String!
+    lastName: String!
+    email: String!
+    tourID: String!
+    tourName: String!
+  }
+
+  type TakeTourResult {
+    tourID: String
+  }
+
+  type Mutation {
+    takeTour(input: TakeTourInput): TakeTourResult!
+  }
+
   input NeighborhoodsInput {
     slug: String
   }
@@ -154,6 +171,75 @@ const toTour = (response: GetPageResponse) => ({
 })
 
 const resolvers = {
+  Mutation: {
+    async takeTour(
+      _: null,
+      args: {
+        input: {
+          firstName: string
+          lastName: string
+          email: string
+          tourID: string
+          tourName: string
+        }
+      },
+    ) {
+      const portalId = '40070077'
+      const formGuid = '3ecf5083-ed79-4ddb-9130-a773c69d22af'
+      const { input } = args
+      const data = {
+        fields: [
+          {
+            objectTypeId: '0-1',
+            name: 'email',
+            value: input.email,
+          },
+          {
+            objectTypeId: '0-1',
+            name: 'firstname',
+            value: input.firstName,
+          },
+          {
+            objectTypeId: '0-1',
+            name: 'lastname',
+            value: input.lastName,
+          },
+          {
+            objectTypeId: '0-1',
+            name: 'tour_url',
+            value: `https://atlantabrewerytours.com/tours/${input.tourID}`,
+          },
+          {
+            objectTypeId: '0-1',
+            name: 'tour_name',
+            value: input.tourName,
+          },
+        ],
+      }
+
+      const response = await fetch(
+        `https://api.hsforms.com/submissions/v3/integration/secure/submit/${portalId}/${formGuid}`,
+        {
+          method: 'POST',
+          body: JSON.stringify(data),
+          headers: {
+            Authorization: `Bearer ${hubspotToken}`,
+            'Content-Type': 'application/json',
+          },
+        },
+      )
+
+      const result = await response.json()
+
+      if (result.inlineMessage) {
+        return {
+          tourID: input.tourID,
+        }
+      }
+
+      throw new Error('An error occurred during form submission')
+    },
+  },
   Query: {
     async brewery(_: null, args: { id: string }) {
       return retrievePage(args.id, toBrewery)
