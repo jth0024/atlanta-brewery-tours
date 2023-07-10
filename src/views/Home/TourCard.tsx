@@ -1,4 +1,8 @@
 import {
+  Alert,
+  AlertDescription,
+  AlertIcon,
+  AlertTitle,
   Button,
   ButtonGroup,
   Card,
@@ -20,13 +24,13 @@ import {
   ModalHeader,
   ModalOverlay,
   Spacer,
+  Stack,
   Tag,
   Text,
   useDisclosure,
 } from '@chakra-ui/react'
-import { useRouter } from 'next/router'
-import React, { FormEventHandler, useRef } from 'react'
-import { useQuery } from 'urql'
+import React, { FormEventHandler, useCallback, useState } from 'react'
+import { useMutation, useQuery } from 'urql'
 import { gql } from '../../__generated__'
 import { pluralize } from '../../lib'
 
@@ -48,32 +52,105 @@ export const TOUR_QUERY = gql(/* GraphQL */ `
   }
 `)
 
+const TAKE_TOUR_MUTATION = gql(/* GraphQL */ `
+  mutation TakeTour($input: TakeTourInput!) {
+    takeTour(input: $input) {
+      tourID
+    }
+  }
+`)
+
+interface FormData {
+  firstName: string
+  lastName: string
+  email: string
+}
+
 interface TourCardProps extends CardProps {
   id: string
 }
 
 export const TourCard = ({ id, ...rest }: TourCardProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const router = useRouter()
-  const [{ data }] = useQuery({
+  const [, takeTour] = useMutation(TAKE_TOUR_MUTATION)
+  const [result, setResult] = useState<{
+    fetching: boolean
+    data?: unknown
+    error?: unknown
+  }>({
+    fetching: false,
+    data: null,
+    error: null,
+  })
+  const [{ data: tourData }] = useQuery({
     query: TOUR_QUERY,
     variables: {
       id,
     },
   })
 
-  const { tour } = data ?? {}
+  const { tour } = tourData ?? {}
 
-  const formRef = useRef<HTMLFormElement | null>(null)
-  const form = formRef?.current
+  const handleOpen = useCallback(() => {
+    setResult({ fetching: false })
+    onOpen()
+  }, [onOpen])
+
+  const handleClose = useCallback(() => {
+    setResult({ fetching: false })
+    onClose()
+  }, [onClose])
+
+  const [formData, setFormData] = useState<FormData>({
+    firstName: '',
+    lastName: '',
+    email: '',
+  })
+  const handleFirstNameChange = useCallback(
+    e =>
+      setFormData(prev => ({
+        ...prev,
+        firstName: e.target.value,
+      })),
+    [],
+  )
+  const handleLastNameChange = useCallback(
+    e =>
+      setFormData(prev => ({
+        ...prev,
+        lastName: e.target.value,
+      })),
+    [],
+  )
+  const handleEmailChange = useCallback(
+    e =>
+      setFormData(prev => ({
+        ...prev,
+        email: e.target.value,
+      })),
+    [],
+  )
   const handleSubmit: FormEventHandler<HTMLFormElement> = e => {
-    // console.log(e)
     e.preventDefault()
-    router.push(`/tours/${id}`)
 
-    if (form) {
-      // console.log(form)
+    const variables = {
+      input: {
+        email: formData.email,
+        firstName: formData.firstName,
+        lastName: formData.lastName,
+        tourName: tour?.name ?? '',
+        tourID: tour?.id ?? '',
+      },
     }
+
+    setResult({ fetching: true })
+
+    takeTour(variables).then(res =>
+      setResult({
+        ...res,
+        fetching: false,
+      }),
+    )
   }
 
   return (
@@ -94,13 +171,13 @@ export const TourCard = ({ id, ...rest }: TourCardProps) => {
         </CardBody>
         <CardFooter justifyContent="flex-end">
           <ButtonGroup>
-            <Button colorScheme="gray" onClick={onOpen}>
+            <Button colorScheme="gray" onClick={handleOpen}>
               Take This Tour
             </Button>
           </ButtonGroup>
         </CardFooter>
       </Card>
-      <Modal isOpen={isOpen} onClose={onClose} motionPreset="slideInBottom">
+      <Modal isOpen={isOpen} onClose={handleClose} motionPreset="slideInBottom">
         <ModalOverlay p="0" />
         <ModalContent
           borderTopRadius="16"
@@ -109,40 +186,103 @@ export const TourCard = ({ id, ...rest }: TourCardProps) => {
           mt="auto"
           mb={{ base: 0, sm: 'auto' }}
         >
-          <form id="tour-form" ref={formRef} onSubmit={handleSubmit}>
-            <ModalHeader>
-              Take this Tour?
-              <ModalCloseButton />
-            </ModalHeader>
-            <ModalBody>
-              <Text mb="4">Your selection:</Text>
-              <Card variant="filled" mb="4">
-                <CardBody>
-                  <Text as="b">{tour?.name ?? ''}</Text>
-                </CardBody>
-              </Card>
-              <Text mb="8">
-                Enter your email address below to receive your free tour guide!
-              </Text>
-              <FormControl>
-                <FormLabel fontWeight="600">Email Address</FormLabel>
-                <Input type="email" />
-                <FormHelperText>
-                  P.S. We will never share your email with 3rd parties
-                </FormHelperText>
-              </FormControl>
-            </ModalBody>
-            <ModalFooter>
-              <ButtonGroup mt="4">
-                <Button variant="outline" onClick={onClose}>
-                  Cancel
-                </Button>
-                <Button colorScheme="orange" type="submit">
-                  Submit
-                </Button>
-              </ButtonGroup>
-            </ModalFooter>
-          </form>
+          {result?.data ? (
+            <div>
+              <ModalHeader>Form Submitted!</ModalHeader>
+              <ModalBody>
+                <Alert
+                  status="success"
+                  variant="subtle"
+                  flexDirection="column"
+                  alignItems="center"
+                  justifyContent="center"
+                  textAlign="center"
+                  height="200px"
+                  borderRadius="lg"
+                >
+                  <AlertIcon boxSize="40px" mr={0} />
+                  <AlertTitle mt={4} mb={1} fontSize="lg">
+                    You&apos;re good to go!
+                  </AlertTitle>
+                  <AlertDescription maxWidth="sm">
+                    You will receive an email with your tour instructions in a
+                    few minutes.
+                  </AlertDescription>
+                </Alert>
+              </ModalBody>
+              <ModalFooter>
+                <Button onClick={handleClose}>Close</Button>
+              </ModalFooter>
+            </div>
+          ) : (
+            <form id="tour-form" onSubmit={handleSubmit}>
+              <ModalHeader>
+                Take this Tour?
+                <ModalCloseButton />
+              </ModalHeader>
+              <ModalBody>
+                <Text mb="4">Your selection:</Text>
+                <Card variant="filled" mb="4">
+                  <CardBody>
+                    <Text as="b">{tour?.name ?? ''}</Text>
+                  </CardBody>
+                </Card>
+                <Text mb="8">
+                  Enter your name and email address below to receive your free
+                  tour guide!
+                </Text>
+                <Stack direction="row">
+                  <FormControl>
+                    <FormLabel fontWeight="600">First Name</FormLabel>
+                    <Input
+                      id="firstname"
+                      type="text"
+                      value={formData.firstName}
+                      onChange={handleFirstNameChange}
+                    />
+                  </FormControl>
+                  <FormControl>
+                    <FormLabel fontWeight="600">Last Name</FormLabel>
+                    <Input
+                      id="lastname"
+                      type="text"
+                      value={formData.lastName}
+                      onChange={handleLastNameChange}
+                    />
+                  </FormControl>
+                </Stack>
+                <FormControl mt="4">
+                  <FormLabel fontWeight="600">Email Address</FormLabel>
+                  <Input
+                    type="email"
+                    value={formData.email}
+                    onChange={handleEmailChange}
+                  />
+                  <FormHelperText>
+                    P.S. We will never share your email with 3rd parties
+                  </FormHelperText>
+                </FormControl>
+              </ModalBody>
+              <ModalFooter>
+                <ButtonGroup mt="4">
+                  <Button
+                    variant="outline"
+                    onClick={handleClose}
+                    disabled={result.fetching}
+                  >
+                    Cancel
+                  </Button>
+                  <Button
+                    colorScheme="orange"
+                    type="submit"
+                    isLoading={result.fetching}
+                  >
+                    Submit
+                  </Button>
+                </ButtonGroup>
+              </ModalFooter>
+            </form>
+          )}
         </ModalContent>
       </Modal>
     </>
