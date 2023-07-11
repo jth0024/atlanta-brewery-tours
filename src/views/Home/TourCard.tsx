@@ -23,6 +23,7 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Skeleton,
   Spacer,
   Stack,
   Tag,
@@ -82,24 +83,14 @@ export const TourCard = ({ id, ...rest }: TourCardProps) => {
     data: null,
     error: null,
   })
-  const [{ data: tourData }] = useQuery({
+  const [tourResult] = useQuery({
     query: TOUR_QUERY,
     variables: {
       id,
     },
   })
 
-  const { tour } = tourData ?? {}
-
-  const handleOpen = useCallback(() => {
-    setResult({ fetching: false })
-    onOpen()
-  }, [onOpen])
-
-  const handleClose = useCallback(() => {
-    setResult({ fetching: false })
-    onClose()
-  }, [onClose])
+  const { tour } = tourResult.data ?? {}
 
   const [formData, setFormData] = useState<FormData>({
     firstName: '',
@@ -153,27 +144,62 @@ export const TourCard = ({ id, ...rest }: TourCardProps) => {
     )
   }
 
+  const handleOpen = useCallback(() => {
+    setResult({ fetching: false })
+    setFormData({
+      email: '',
+      firstName: '',
+      lastName: '',
+    })
+    onOpen()
+  }, [onOpen])
+
+  const handleClose = useCallback(() => {
+    setResult({ fetching: false })
+    onClose()
+  }, [onClose])
+
+  if (tourResult.error && !tourResult.fetching) {
+    return null
+  }
+
   return (
     <>
       <Card variant="outline" backgroundColor="white" {...rest}>
         <CardHeader>
-          <Heading size="sm">{tour?.name ?? ''}</Heading>
+          {tourResult.fetching ? (
+            <Skeleton height="20px" width="200px" />
+          ) : (
+            <Heading size="sm">{tour?.name ?? ''}</Heading>
+          )}
           <Spacer height="2" />
-          <HStack>
-            <Tag>
-              {pluralize(tour?.breweries?.length ?? 0, 'stop', 'stops')}
-            </Tag>
-            <Tag>{`${tour?.distance ?? 0} miles`}</Tag>
-          </HStack>
+          {tourResult.fetching ? (
+            <Skeleton height="24px" width="100px" />
+          ) : (
+            <HStack>
+              <Tag>
+                {pluralize(tour?.breweries?.length ?? 0, 'stop', 'stops')}
+              </Tag>
+              <Tag>{`${tour?.distance ?? 0} miles`}</Tag>
+            </HStack>
+          )}
         </CardHeader>
         <CardBody>
-          <Text>{tour?.description ?? ''}</Text>
+          {tourResult.fetching ? (
+            <Skeleton height="150px" />
+          ) : (
+            <Text>{tour?.description ?? ''}</Text>
+          )}
         </CardBody>
         <CardFooter justifyContent="flex-end">
           <ButtonGroup>
-            <Button colorScheme="gray" onClick={handleOpen}>
-              Take This Tour
-            </Button>
+            {tourResult.fetching ? (
+              <Skeleton height="40px" width="144px" />
+            ) : (
+              <Button colorScheme="gray" onClick={handleOpen}>
+                Take This Tour
+              </Button>
+            )}
           </ButtonGroup>
         </CardFooter>
       </Card>
@@ -186,9 +212,38 @@ export const TourCard = ({ id, ...rest }: TourCardProps) => {
           mt="auto"
           mb={{ base: 0, sm: 'auto' }}
         >
-          {result?.data ? (
+          {/* eslint-disable-next-line no-nested-ternary */}
+          {result?.error ? (
             <div>
-              <ModalHeader>Form Submitted!</ModalHeader>
+              <ModalHeader>Something Went Wrong</ModalHeader>
+              <ModalBody>
+                <Alert
+                  status="error"
+                  variant="subtle"
+                  flexDirection="column"
+                  alignItems="center"
+                  justifyContent="center"
+                  textAlign="center"
+                  height="200px"
+                  borderRadius="lg"
+                >
+                  <AlertIcon boxSize="40px" mr={0} />
+                  <AlertTitle mt={4} mb={1} fontSize="lg">
+                    Failed to register tour.
+                  </AlertTitle>
+                  <AlertDescription maxWidth="sm">
+                    There was a problem registering your tour. Please try again
+                    later.
+                  </AlertDescription>
+                </Alert>
+              </ModalBody>
+              <ModalFooter>
+                <Button onClick={handleClose}>Done</Button>
+              </ModalFooter>
+            </div>
+          ) : result?.data ? (
+            <div>
+              <ModalHeader>You&apos;re Registered!</ModalHeader>
               <ModalBody>
                 <Alert
                   status="success"
@@ -202,16 +257,26 @@ export const TourCard = ({ id, ...rest }: TourCardProps) => {
                 >
                   <AlertIcon boxSize="40px" mr={0} />
                   <AlertTitle mt={4} mb={1} fontSize="lg">
-                    You&apos;re good to go!
+                    Check your inbox
                   </AlertTitle>
                   <AlertDescription maxWidth="sm">
-                    You will receive an email with your tour instructions in a
-                    few minutes.
+                    We sent an email with instructions to start your free
+                    brewery tour.
                   </AlertDescription>
                 </Alert>
+                <Text
+                  textAlign="center"
+                  variant="caption"
+                  color="GrayText"
+                  mt="4"
+                  fontSize="xs"
+                >
+                  Didn&apos;t receive the email? Check your spam folder or try a
+                  different email address.
+                </Text>
               </ModalBody>
               <ModalFooter>
-                <Button onClick={handleClose}>Close</Button>
+                <Button onClick={handleClose}>Done</Button>
               </ModalFooter>
             </div>
           ) : (
