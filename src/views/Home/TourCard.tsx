@@ -234,12 +234,11 @@ export const TourCard = ({ id, ...rest }: TourCardProps) => {
             </div>
           ) : result?.data ? (
             <div>
-              <ModalHeader>Success!</ModalHeader>
+              <ModalHeader>You&apos;re Registered!</ModalHeader>
               <ModalBody>
                 <Alert
                   status="success"
                   variant="subtle"
-                  // colorScheme="orange"
                   flexDirection="column"
                   alignItems="center"
                   justifyContent="center"
