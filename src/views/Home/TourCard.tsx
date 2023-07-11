@@ -92,16 +92,6 @@ export const TourCard = ({ id, ...rest }: TourCardProps) => {
 
   const { tour } = tourResult.data ?? {}
 
-  const handleOpen = useCallback(() => {
-    setResult({ fetching: false })
-    onOpen()
-  }, [onOpen])
-
-  const handleClose = useCallback(() => {
-    setResult({ fetching: false })
-    onClose()
-  }, [onClose])
-
   const [formData, setFormData] = useState<FormData>({
     firstName: '',
     lastName: '',
@@ -153,6 +143,21 @@ export const TourCard = ({ id, ...rest }: TourCardProps) => {
       }),
     )
   }
+
+  const handleOpen = useCallback(() => {
+    setResult({ fetching: false })
+    setFormData({
+      email: '',
+      firstName: '',
+      lastName: '',
+    })
+    onOpen()
+  }, [onOpen])
+
+  const handleClose = useCallback(() => {
+    setResult({ fetching: false })
+    onClose()
+  }, [onClose])
 
   return (
     <>
