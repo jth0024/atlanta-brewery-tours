@@ -25,6 +25,12 @@ export const NEIGHBORHOOD_QUERY = gql(/* GraphQL */ `
     }
     tours {
       id
+      name
+      description
+      distance
+      breweries {
+        id
+      }
       neighborhood {
         id
       }
@@ -87,9 +93,18 @@ export const Neighborhood = ({ slug }: NeighborhoodProps) => {
             </Text>
           </Center>
         )}
-        {matchingTours.map(({ id }) => (
-          <TourCard key={id} id={id} />
-        ))}
+        {matchingTours.map(
+          ({ id, name, description, breweries = [], distance }) => (
+            <TourCard
+              key={id}
+              id={id}
+              name={name || ''}
+              description={description || ''}
+              stops={breweries.length || 0}
+              distance={distance || 0}
+            />
+          ),
+        )}
       </Stack>
     </Container>
   )

@@ -9,7 +9,7 @@ import {
   Text,
   Wrap,
 } from '@chakra-ui/react'
-import { intersection } from 'lodash'
+import { intersection, range } from 'lodash'
 import React, {
   MutableRefObject,
   useCallback,
@@ -22,6 +22,7 @@ import { gql } from '../../__generated__'
 import { Section, Slider } from '../../lib'
 import { Step } from './Step'
 import { TourCard } from './TourCard'
+import { TourCardSkeleton } from './TourCardSkeleton'
 
 export const HOME_QUERY = gql(/* GraphQL */ `
   query Home {
@@ -50,7 +51,7 @@ export const HOME_QUERY = gql(/* GraphQL */ `
 `)
 
 export const Home = () => {
-  // const popularToursRef = useRef<HTMLHeadingElement | null>(null)
+  const popularToursRef = useRef<HTMLHeadingElement | null>(null)
   const topRef = useRef<HTMLDivElement | null>(null)
   const scrollIntoView = useCallback(
     (ref: MutableRefObject<HTMLElement | null>) => {
@@ -69,21 +70,24 @@ export const Home = () => {
     scrollIntoView(topRef)
   }, [scrollIntoView])
 
-  const [{ data }] = useQuery({ query: HOME_QUERY })
+  const [{ data, fetching }] = useQuery({ query: HOME_QUERY })
   const { tours = [], regions = [] } = data ?? {}
 
   const [filters, setFilters] = useState<string[]>([])
-  const featuredTours = tours.filter(t => t.isFeatured)
+  const validTours = tours.filter(
+    t => t.id && t.name && t.distance && t.description && t.breweries.length,
+  )
+  const featuredTours = validTours.filter(t => t.isFeatured)
   const filteredTours =
     filters.length > 0
-      ? tours.filter(
+      ? validTours.filter(
           ({ neighborhood }) =>
             intersection(
               neighborhood?.regions?.map(({ id }) => id),
               filters,
             ).length > 0,
         )
-      : tours
+      : validTours
 
   return (
     <div>
@@ -129,7 +133,7 @@ export const Home = () => {
           <Button
             colorScheme="orange"
             rightIcon={<ArrowForwardIcon />}
-            // onClick={() => scrollIntoView(popularToursRef)}
+            onClick={() => scrollIntoView(popularToursRef)}
           >
             Find a Tour
           </Button>
@@ -141,22 +145,39 @@ export const Home = () => {
             pb="12"
             size="xl"
             textTransform="capitalize"
-            // ref={popularToursRef}
+            ref={popularToursRef}
           >
             Popular Tours
           </Heading>
           <Slider>
-            {featuredTours.map(({ id }) => (
-              <TourCard
-                key={id}
-                id={id}
-                sx={{
-                  width: '320px',
-                  minWidth: '320px',
-                  alignSelf: 'stetch',
-                }}
-              />
-            ))}
+            {fetching
+              ? range(0, 5).map(i => (
+                  <TourCardSkeleton
+                    key={i}
+                    sx={{
+                      width: '320px',
+                      minWidth: '320px',
+                      alignSelf: 'stetch',
+                    }}
+                  />
+                ))
+              : featuredTours.map(
+                  ({ id, name, description, distance, breweries = [] }) => (
+                    <TourCard
+                      key={id}
+                      id={id}
+                      name={name || ''}
+                      description={description || ''}
+                      distance={distance || 0}
+                      stops={breweries.length || 0}
+                      sx={{
+                        width: '320px',
+                        minWidth: '320px',
+                        alignSelf: 'stetch',
+                      }}
+                    />
+                  ),
+                )}
           </Slider>
         </Section>
       </Stack>
@@ -186,7 +207,19 @@ export const Home = () => {
           ))}
         </Wrap>
         <Stack spacing={6}>
-          {filteredTours.length === 0 ? (
+          {/* eslint-disable-next-line no-nested-ternary */}
+          {fetching ? (
+            range(0, 5).map(i => (
+              <TourCardSkeleton
+                key={i}
+                sx={{
+                  width: '320px',
+                  minWidth: '320px',
+                  alignSelf: 'stetch',
+                }}
+              />
+            ))
+          ) : filteredTours.length === 0 ? (
             <Center alignSelf="stretch" minHeight="320px">
               <Stack align="center" spacing={4}>
                 <Text
@@ -208,7 +241,18 @@ export const Home = () => {
               </Stack>
             </Center>
           ) : (
-            filteredTours.map(({ id }) => <TourCard key={id} id={id} />)
+            filteredTours.map(
+              ({ id, name, description, distance, breweries = [] }) => (
+                <TourCard
+                  key={id}
+                  id={id}
+                  name={name || ''}
+                  description={description || ''}
+                  distance={distance || 0}
+                  stops={breweries.length || 0}
+                />
+              ),
+            )
           )}
         </Stack>
       </Section>

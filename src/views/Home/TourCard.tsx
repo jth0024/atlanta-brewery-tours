@@ -3,6 +3,7 @@ import {
   AlertDescription,
   AlertIcon,
   AlertTitle,
+  Box,
   Button,
   ButtonGroup,
   Card,
@@ -23,7 +24,6 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Skeleton,
   Spacer,
   Stack,
   Tag,
@@ -31,27 +31,9 @@ import {
   useDisclosure,
 } from '@chakra-ui/react'
 import React, { FormEventHandler, useCallback, useState } from 'react'
-import { useMutation, useQuery } from 'urql'
+import { useMutation } from 'urql'
 import { gql } from '../../__generated__'
 import { pluralize } from '../../lib'
-
-export const TOUR_QUERY = gql(/* GraphQL */ `
-  query TourSummary($id: ID!) {
-    tour(id: $id) {
-      id
-      name
-      distance
-      description
-      emailTemplateID
-      breweries {
-        id
-      }
-      neighborhood {
-        id
-      }
-    }
-  }
-`)
 
 const TAKE_TOUR_MUTATION = gql(/* GraphQL */ `
   mutation TakeTour($input: TakeTourInput!) {
@@ -69,9 +51,20 @@ interface FormData {
 
 interface TourCardProps extends CardProps {
   id: string
+  name: string
+  description: string
+  distance: number
+  stops: number
 }
 
-export const TourCard = ({ id, ...rest }: TourCardProps) => {
+export const TourCard = ({
+  id,
+  name,
+  description,
+  distance = 0,
+  stops = 0,
+  ...rest
+}: TourCardProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
   const [, takeTour] = useMutation(TAKE_TOUR_MUTATION)
   const [result, setResult] = useState<{
@@ -83,14 +76,6 @@ export const TourCard = ({ id, ...rest }: TourCardProps) => {
     data: null,
     error: null,
   })
-  const [tourResult] = useQuery({
-    query: TOUR_QUERY,
-    variables: {
-      id,
-    },
-  })
-
-  const { tour } = tourResult.data ?? {}
 
   const [formData, setFormData] = useState<FormData>({
     firstName: '',
@@ -129,8 +114,8 @@ export const TourCard = ({ id, ...rest }: TourCardProps) => {
         email: formData.email,
         firstName: formData.firstName,
         lastName: formData.lastName,
-        tourName: tour?.name ?? '',
-        tourID: tour?.id ?? '',
+        tourName: name ?? '',
+        tourID: id ?? '',
       },
     }
 
@@ -159,47 +144,26 @@ export const TourCard = ({ id, ...rest }: TourCardProps) => {
     onClose()
   }, [onClose])
 
-  if (tourResult.error && !tourResult.fetching) {
-    return null
-  }
-
   return (
     <>
       <Card variant="outline" backgroundColor="white" {...rest}>
         <CardHeader>
-          {tourResult.fetching ? (
-            <Skeleton height="20px" width="200px" />
-          ) : (
-            <Heading size="sm">{tour?.name ?? ''}</Heading>
-          )}
+          <Heading size="sm">{name}</Heading>
           <Spacer height="2" />
-          {tourResult.fetching ? (
-            <Skeleton height="24px" width="100px" />
-          ) : (
-            <HStack>
-              <Tag>
-                {pluralize(tour?.breweries?.length ?? 0, 'stop', 'stops')}
-              </Tag>
-              <Tag>{`${tour?.distance ?? 0} miles`}</Tag>
-            </HStack>
-          )}
+
+          <HStack>
+            <Tag>{pluralize(stops, 'stop', 'stops')}</Tag>
+            <Tag>{`${distance} miles`}</Tag>
+          </HStack>
         </CardHeader>
         <CardBody>
-          {tourResult.fetching ? (
-            <Skeleton height="150px" />
-          ) : (
-            <Text>{tour?.description ?? ''}</Text>
-          )}
+          <Text>{description}</Text>
         </CardBody>
         <CardFooter justifyContent="flex-end">
           <ButtonGroup>
-            {tourResult.fetching ? (
-              <Skeleton height="40px" width="144px" />
-            ) : (
-              <Button colorScheme="gray" onClick={handleOpen}>
-                Take This Tour
-              </Button>
-            )}
+            <Button colorScheme="gray" onClick={handleOpen}>
+              Take This Tour
+            </Button>
           </ButtonGroup>
         </CardFooter>
       </Card>
@@ -243,7 +207,7 @@ export const TourCard = ({ id, ...rest }: TourCardProps) => {
             </div>
           ) : result?.data ? (
             <div>
-              <ModalHeader>You&apos;re Registered!</ModalHeader>
+              <ModalHeader>Enjoy the Tour!</ModalHeader>
               <ModalBody>
                 <Alert
                   status="success"
@@ -286,16 +250,18 @@ export const TourCard = ({ id, ...rest }: TourCardProps) => {
                 <ModalCloseButton />
               </ModalHeader>
               <ModalBody>
-                <Text mb="4">Your selection:</Text>
-                <Card variant="filled" mb="4">
-                  <CardBody>
-                    <Text as="b">{tour?.name ?? ''}</Text>
-                  </CardBody>
-                </Card>
-                <Text mb="8">
-                  Enter your name and email address below to receive your free
-                  tour guide!
-                </Text>
+                <Box mb="12">
+                  <Text mb="3">You selected:</Text>
+                  <Card variant="filled" mb="3">
+                    <CardBody>
+                      <Text as="b">{name ?? ''}</Text>
+                    </CardBody>
+                  </Card>
+                  <Text>
+                    Enter your name and email address below. We&apos;ll send
+                    instructions to start your tour.
+                  </Text>
+                </Box>
                 <Stack direction="row">
                   <FormControl>
                     <FormLabel fontWeight="600">First Name</FormLabel>
@@ -304,6 +270,7 @@ export const TourCard = ({ id, ...rest }: TourCardProps) => {
                       type="text"
                       value={formData.firstName}
                       onChange={handleFirstNameChange}
+                      textTransform="capitalize"
                     />
                   </FormControl>
                   <FormControl>
@@ -313,6 +280,7 @@ export const TourCard = ({ id, ...rest }: TourCardProps) => {
                       type="text"
                       value={formData.lastName}
                       onChange={handleLastNameChange}
+                      textTransform="capitalize"
                     />
                   </FormControl>
                 </Stack>
@@ -322,6 +290,7 @@ export const TourCard = ({ id, ...rest }: TourCardProps) => {
                     type="email"
                     value={formData.email}
                     onChange={handleEmailChange}
+                    textTransform="lowercase"
                   />
                   <FormHelperText>
                     P.S. We will never share your email with 3rd parties
