@@ -159,6 +159,10 @@ export const TourCard = ({ id, ...rest }: TourCardProps) => {
     onClose()
   }, [onClose])
 
+  if (tourResult.error && !tourResult.fetching) {
+    return null
+  }
+
   return (
     <>
       <Card variant="outline" backgroundColor="white" {...rest}>
