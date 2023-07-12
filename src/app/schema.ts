@@ -18,36 +18,6 @@ const neighborhoodsDB = process.env.NOTION_NEIGHBORHOODS_DATABASE_ID ?? ''
 export const client = new Client({ auth })
 
 const typeDefs = gql`
-  input TakeTourInput {
-    firstName: String!
-    lastName: String!
-    email: String!
-    tourID: String!
-    tourName: String!
-  }
-
-  type TakeTourResult {
-    tourID: String
-  }
-
-  type Mutation {
-    takeTour(input: TakeTourInput): TakeTourResult!
-  }
-
-  input NeighborhoodsInput {
-    slug: String
-  }
-
-  type Query {
-    breweries: [Brewery!]!
-    brewery(id: ID!): Brewery
-    neighborhoods(filter: NeighborhoodsInput): [Neighborhood!]!
-    neighborhood(id: ID!): Neighborhood
-    regions: [Region!]!
-    tours: [Tour!]!
-    tour(id: ID!): Tour
-  }
-
   type Brewery {
     id: ID!
     name: String
@@ -64,6 +34,17 @@ const typeDefs = gql`
     regions: [Region!]!
   }
 
+  type Region {
+    id: ID!
+    name: String
+  }
+
+  type Subscriber {
+    email: String!
+    firstName: String
+    lastName: String
+  }
+
   type Tour {
     id: ID!
     isFeatured: Boolean
@@ -76,9 +57,35 @@ const typeDefs = gql`
     googleMapsLink: String
   }
 
-  type Region {
-    id: ID!
-    name: String
+  input CreateSubscriberInput {
+    email: String!
+    firstName: String
+    lastName: String
+    tourName: String
+    tourID: String
+  }
+
+  type CreateSubscriberResult {
+    subscriber: Subscriber!
+    tour: Tour!
+  }
+
+  type Mutation {
+    createSubscriber(input: CreateSubscriberInput!): CreateSubscriberResult!
+  }
+
+  input NeighborhoodsInput {
+    slug: String
+  }
+
+  type Query {
+    breweries: [Brewery!]!
+    brewery(id: ID!): Brewery
+    neighborhoods(filter: NeighborhoodsInput): [Neighborhood!]!
+    neighborhood(id: ID!): Neighborhood
+    regions: [Region!]!
+    tours: [Tour!]!
+    tour(id: ID!): Tour
   }
 `
 
@@ -172,7 +179,7 @@ const toTour = (response: GetPageResponse) => ({
 
 const resolvers = {
   Mutation: {
-    async takeTour(
+    async createSubscriber(
       _: null,
       args: {
         input: {
@@ -232,8 +239,14 @@ const resolvers = {
       const result = await response.json()
 
       if (result.inlineMessage) {
+        const tour = await retrievePage(input.tourID, toTour)
         return {
-          tourID: input.tourID,
+          tour,
+          subscriber: {
+            email: input.email,
+            firstName: input.firstName,
+            lastName: input.lastName,
+          },
         }
       }
 
