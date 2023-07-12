@@ -35,10 +35,12 @@ import { useMutation } from 'urql'
 import { gql } from '../../__generated__'
 import { pluralize } from '../../lib'
 
-const TAKE_TOUR_MUTATION = gql(/* GraphQL */ `
-  mutation TakeTour($input: TakeTourInput!) {
-    takeTour(input: $input) {
-      tourID
+const CREATE_SUBSCRIBER_MUTATION = gql(/* GraphQL */ `
+  mutation CreateSubscriber($input: CreateSubscriberInput!) {
+    createSubscriber(input: $input) {
+      tour {
+        id
+      }
     }
   }
 `)
@@ -66,7 +68,7 @@ export const TourCard = ({
   ...rest
 }: TourCardProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
-  const [, takeTour] = useMutation(TAKE_TOUR_MUTATION)
+  const [, createSubscriber] = useMutation(CREATE_SUBSCRIBER_MUTATION)
   const [result, setResult] = useState<{
     fetching: boolean
     data?: unknown
@@ -121,11 +123,12 @@ export const TourCard = ({
 
     setResult({ fetching: true })
 
-    takeTour(variables).then(res =>
-      setResult({
+    createSubscriber(variables).then(res =>
+      setResult(prev => ({
+        ...prev,
         ...res,
         fetching: false,
-      }),
+      })),
     )
   }
 
