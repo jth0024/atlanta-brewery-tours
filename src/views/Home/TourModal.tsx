@@ -8,14 +8,9 @@ import {
   ButtonGroup,
   Card,
   CardBody,
-  CardFooter,
-  CardHeader,
-  CardProps,
   FormControl,
   FormHelperText,
   FormLabel,
-  Heading,
-  HStack,
   Input,
   Modal,
   ModalBody,
@@ -24,19 +19,15 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
-  Spacer,
   Stack,
-  Tag,
   Text,
-  useDisclosure,
 } from '@chakra-ui/react'
 import React, { FormEventHandler, useCallback, useState } from 'react'
 import { useMutation } from 'urql'
 import { gql } from '../../__generated__'
-import { pluralize } from '../../lib'
 
 const CREATE_SUBSCRIBER_MUTATION = gql(/* GraphQL */ `
-  mutation CreateSubscriber($input: CreateSubscriberInput!) {
+  mutation CreateSubscriberFromTour($input: CreateSubscriberInput!) {
     createSubscriber(input: $input) {
       tour {
         id

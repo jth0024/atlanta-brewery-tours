@@ -28,12 +28,16 @@ export const getStaticProps = async () => {
       // urqlState is a keyword here so withUrqlClient can pick it up.
       urqlState: ssrCache.extractData(),
     },
-    revalidate: 600,
   }
 }
 
 const HomePage = () => <Home />
 
-export default withUrqlClient(() => ({
-  url: API_URL,
-}))(HomePage)
+export default withUrqlClient(
+  () => ({
+    url: API_URL,
+  }),
+  {
+    staleWhileRevalidate: true,
+  },
+)(HomePage)

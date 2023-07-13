@@ -1,6 +1,7 @@
 import type { AppProps } from 'next/app'
+import { withUrqlClient } from 'next-urql'
 import React from 'react'
-import { App } from '../app'
+import { API_URL, App } from '../app'
 
 const AppPage = ({ Component, pageProps }: AppProps) => (
   // 2. Wrap ChakraProvider at the root of your app
@@ -9,4 +10,4 @@ const AppPage = ({ Component, pageProps }: AppProps) => (
   </App>
 )
 
-export default AppPage
+export default withUrqlClient(() => ({ url: API_URL }))(AppPage)
