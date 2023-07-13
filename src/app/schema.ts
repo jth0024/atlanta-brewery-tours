@@ -67,7 +67,7 @@ const typeDefs = gql`
 
   type CreateSubscriberResult {
     subscriber: Subscriber!
-    tour: Tour!
+    tour: Tour
   }
 
   type Mutation {
@@ -191,8 +191,6 @@ const resolvers = {
         }
       },
     ) {
-      const portalId = '40070077'
-      const formGuid = '3ecf5083-ed79-4ddb-9130-a773c69d22af'
       const { input } = args
       const data = {
         fields: [
@@ -204,13 +202,18 @@ const resolvers = {
           {
             objectTypeId: '0-1',
             name: 'firstname',
-            value: input.firstName,
+            value: input.firstName ?? '',
           },
           {
             objectTypeId: '0-1',
             name: 'lastname',
-            value: input.lastName,
+            value: input.lastName ?? '',
           },
+        ],
+      }
+
+      if (input.tourID && input.tourName) {
+        data.fields.push(
           {
             objectTypeId: '0-1',
             name: 'tour_url',
@@ -221,8 +224,14 @@ const resolvers = {
             name: 'tour_name',
             value: input.tourName,
           },
-        ],
+        )
       }
+
+      const portalId = '40070077'
+      const fromTourFormGuid = '3ecf5083-ed79-4ddb-9130-a773c69d22af'
+      const fromFooterFormGuid = '408e3acf-88cf-4227-8d3d-4a1e8ea9b029'
+      const formGuid =
+        input.tourID && input.tourName ? fromTourFormGuid : fromFooterFormGuid
 
       const response = await fetch(
         `https://api.hsforms.com/submissions/v3/integration/secure/submit/${portalId}/${formGuid}`,
@@ -239,14 +248,19 @@ const resolvers = {
       const result = await response.json()
 
       if (result.inlineMessage) {
-        const tour = await retrievePage(input.tourID, toTour)
+        const subscriber = {
+          email: input.email,
+          firstName: input.firstName,
+          lastName: input.lastName,
+        }
+
+        if (input.tourID && input.tourName) {
+          const tour = await retrievePage(input.tourID, toTour)
+          return { subscriber, tour }
+        }
+
         return {
-          tour,
-          subscriber: {
-            email: input.email,
-            firstName: input.firstName,
-            lastName: input.lastName,
-          },
+          subscriber,
         }
       }
 
