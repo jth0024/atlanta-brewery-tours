@@ -128,19 +128,29 @@ export const Home = () => {
           </Heading>
           <Stack
             py="12"
-            spacing="4"
-            direction={{ base: 'row', sm: 'row' }}
+            spacing={4}
+            direction="row"
             alignItems="stretch"
-            justifyContent="space-evenly"
+            justifyContent="center"
           >
-            <Step flex="0 0 30%" icon={Search2Icon} description="Find a tour" />
+            <Step
+              maxW={{ base: 'none', sm: '160px' }}
+              minH={{ base: 'none', sm: '160px' }}
+              flex="0 0 30%"
+              icon={Search2Icon}
+              description="Find a tour"
+            />
             <Step
               flex="0 0 30%"
+              maxW={{ base: 'none', sm: '160px' }}
+              minH={{ base: 'none', sm: '160px' }}
               icon={EmailIcon}
               description="Enter your email"
             />
             <Step
               flex="0 0 30%"
+              maxW={{ base: 'none', sm: '160px' }}
+              minH={{ base: 'none', sm: '160px' }}
               icon={FaMapMarkedAlt}
               description="Receive your tour!"
             />
