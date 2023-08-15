@@ -90,7 +90,7 @@ export const Home = () => {
       : validTours
 
   return (
-    <div>
+    <Box backgroundColor="background">
       <div ref={topRef} />
       <Section textAlign="left" py="16">
         <Heading as="h1" fontWeight="800" size="4xl" textTransform="capitalize">
@@ -131,7 +131,8 @@ export const Home = () => {
             <Step order={3} description="Receive your tour!" />
           </Stack>
           <Button
-            colorScheme="orange"
+            colorScheme="primary"
+            id="find-a-tour"
             rightIcon={<ArrowForwardIcon />}
             onClick={() => scrollIntoView(popularToursRef)}
           >
@@ -190,7 +191,7 @@ export const Home = () => {
             <Button
               key={region.id}
               borderRadius="full"
-              colorScheme={filters.includes(region.id) ? 'orange' : 'gray'}
+              colorScheme={filters.includes(region.id) ? 'primary' : 'gray'}
               variant={filters.includes(region.id) ? 'solid' : 'outline'}
               cursor="pointer"
               onClick={() => {
@@ -232,7 +233,7 @@ export const Home = () => {
                   to try something else?&nbsp;
                 </Text>
                 <Button
-                  colorScheme="orange"
+                  colorScheme="primary"
                   variant="link"
                   onClick={() => setFilters([])}
                 >
@@ -256,6 +257,6 @@ export const Home = () => {
           )}
         </Stack>
       </Section>
-    </div>
+    </Box>
   )
 }

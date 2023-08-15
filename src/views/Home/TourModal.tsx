@@ -102,6 +102,7 @@ export const TourModal = ({ id, isOpen, onClose, name }: TourModalProps) => {
     <Modal isOpen={isOpen} onClose={onClose} motionPreset="slideInBottom">
       <ModalOverlay p="0" />
       <ModalContent
+        backgroundColor="surface"
         borderTopRadius="16"
         borderBottomRadius={{ base: 0, sm: '16' }}
         mx={{ base: 0, sm: '4' }}
@@ -143,6 +144,7 @@ export const TourModal = ({ id, isOpen, onClose, name }: TourModalProps) => {
             <ModalBody>
               <Alert
                 status="success"
+                backgroundColor="secondaryContainer"
                 variant="subtle"
                 flexDirection="column"
                 alignItems="center"
@@ -151,7 +153,7 @@ export const TourModal = ({ id, isOpen, onClose, name }: TourModalProps) => {
                 height="200px"
                 borderRadius="lg"
               >
-                <AlertIcon boxSize="40px" mr={0} />
+                <AlertIcon color="secondary" boxSize="40px" mr={0} />
                 <AlertTitle mt={4} mb={1} fontSize="lg">
                   Check your inbox
                 </AlertTitle>
@@ -184,7 +186,11 @@ export const TourModal = ({ id, isOpen, onClose, name }: TourModalProps) => {
             <ModalBody>
               <Box mb="12">
                 <Text mb="3">You selected:</Text>
-                <Card variant="filled" mb="3">
+                <Card
+                  variant="filled"
+                  backgroundColor="secondaryContainer"
+                  mb="3"
+                >
                   <CardBody>
                     <Text as="b">{name ?? ''}</Text>
                   </CardBody>
@@ -239,7 +245,7 @@ export const TourModal = ({ id, isOpen, onClose, name }: TourModalProps) => {
                   Cancel
                 </Button>
                 <Button
-                  colorScheme="orange"
+                  colorScheme="primary"
                   type="submit"
                   isLoading={result.fetching}
                 >
