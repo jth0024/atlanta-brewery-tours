@@ -8,12 +8,12 @@ interface LayoutProps {
 }
 
 export const Layout = ({ children }: LayoutProps) => (
-  <div>
+  <Box color="onSurface">
     <Box position="sticky" top="0" zIndex="1">
       <Topbar />
     </Box>
     <main>{React.Children.only(children)}</main>
     <Divider />
     <Footer />
-  </div>
+  </Box>
 )

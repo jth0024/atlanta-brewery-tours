@@ -1,4 +1,4 @@
-import { ArrowForwardIcon } from '@chakra-ui/icons'
+import { ArrowForwardIcon, EmailIcon, Search2Icon } from '@chakra-ui/icons'
 import {
   Box,
   Button,
@@ -17,6 +17,7 @@ import React, {
   useRef,
   useState,
 } from 'react'
+import { FaMapMarkedAlt } from 'react-icons/fa'
 import { useQuery } from 'urql'
 import { gql } from '../../__generated__'
 import { Section, Slider } from '../../lib'
@@ -93,10 +94,16 @@ export const Home = () => {
     <Box backgroundColor="background">
       <div ref={topRef} />
       <Section textAlign="left" py="16">
-        <Heading as="h1" fontWeight="800" size="4xl" textTransform="capitalize">
+        <Heading
+          as="h1"
+          fontWeight="800"
+          size="4xl"
+          textTransform="capitalize"
+          color="onSurface"
+        >
           Atlanta Brewery Tours
         </Heading>
-        <Text fontSize="xl" fontWeight="500" pt="4">
+        <Text fontSize="xl" fontWeight="500" pt="4" color="onSurface">
           Atlanta Brewery Tours is a{' '}
           <i>
             <b>free</b>
@@ -121,14 +128,32 @@ export const Home = () => {
           </Heading>
           <Stack
             py="12"
-            spacing="4"
-            direction={{ base: 'row', sm: 'row' }}
-            alignItems="center"
-            justifyContent="space-evenly"
+            spacing={4}
+            direction="row"
+            alignItems="stretch"
+            justifyContent="center"
           >
-            <Step order={1} description="Choose a tour" />
-            <Step order={2} description="Enter your email" />
-            <Step order={3} description="Receive your tour!" />
+            <Step
+              maxW={{ base: 'none', sm: '160px' }}
+              minH={{ base: 'none', sm: '160px' }}
+              flex="0 0 30%"
+              icon={Search2Icon}
+              description="Find a tour"
+            />
+            <Step
+              flex="0 0 30%"
+              maxW={{ base: 'none', sm: '160px' }}
+              minH={{ base: 'none', sm: '160px' }}
+              icon={EmailIcon}
+              description="Enter your email"
+            />
+            <Step
+              flex="0 0 30%"
+              maxW={{ base: 'none', sm: '160px' }}
+              minH={{ base: 'none', sm: '160px' }}
+              icon={FaMapMarkedAlt}
+              description="Receive your tour!"
+            />
           </Stack>
           <Button
             colorScheme="primary"
