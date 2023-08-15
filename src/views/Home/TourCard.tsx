@@ -37,7 +37,12 @@ export const TourCard = ({
 
   return (
     <>
-      <Card variant="outline" backgroundColor="surface" {...rest}>
+      <Card
+        variant="outline"
+        backgroundColor="surface"
+        borderRadius="lg"
+        {...rest}
+      >
         <CardHeader>
           <Heading size="sm">{name}</Heading>
           <Spacer height="2" />

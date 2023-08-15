@@ -1,26 +1,25 @@
-import { Circle, Heading, Stack } from '@chakra-ui/react'
+import { Circle, Heading, Icon, Stack } from '@chakra-ui/react'
+import { ComponentProps } from 'react'
 
-interface StepProps {
+type StepProps = {
   description: string
-  order: number
-}
+  // order: number
+  icon: ComponentProps<typeof Icon>['as']
+} & ComponentProps<typeof Stack>
 
-export const Step = ({ description, order }: StepProps) => (
+export const Step = ({ description, icon, ...rest }: StepProps) => (
   <Stack
     spacing="4"
     alignItems="center"
     justifyContent={{ base: 'center', sm: 'center' }}
     direction={{ base: 'column', sm: 'column' }}
+    backgroundColor="surfaceVariant"
+    padding="4"
+    borderRadius="lg"
+    color="onSurfaceVariant"
+    {...rest}
   >
-    <Circle
-      size="12"
-      padding="6"
-      borderRadius="full"
-      backgroundColor="gray.100"
-      flex="0 0 auto"
-    >
-      <Heading size="xl">{order}</Heading>
-    </Circle>
+    <Icon flex="0 0 auto" as={icon} fontSize="3xl" color="currentcolor" />
     <Heading
       as="h3"
       fontWeight="800"
