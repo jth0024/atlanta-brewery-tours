@@ -86,7 +86,7 @@ export const Neighborhood = ({ slug }: NeighborhoodProps) => {
               Darn! There aren&apos;t any tours in this neighborhood yet.
               <br />
               View more{' '}
-              <Link color="orange.500" as={NextLink} href="/">
+              <Link color="primary" as={NextLink} href="/">
                 neighborhoods
               </Link>
               .

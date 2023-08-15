@@ -14,7 +14,7 @@ const BlogPage = () => (
           {` `}
           <Link
             textDecoration="underline"
-            color="orange.500"
+            color="primary"
             as={NextLink}
             href="/#tours"
           >

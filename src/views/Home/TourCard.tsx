@@ -37,14 +37,16 @@ export const TourCard = ({
 
   return (
     <>
-      <Card variant="outline" backgroundColor="white" {...rest}>
+      <Card variant="outline" backgroundColor="surface" {...rest}>
         <CardHeader>
           <Heading size="sm">{name}</Heading>
           <Spacer height="2" />
 
           <HStack>
-            <Tag>{pluralize(stops, 'stop', 'stops')}</Tag>
-            <Tag>{`${distance} miles`}</Tag>
+            <Tag colorScheme="secondary">
+              {pluralize(stops, 'stop', 'stops')}
+            </Tag>
+            <Tag colorScheme="secondary">{`${distance} miles`}</Tag>
           </HStack>
         </CardHeader>
         <CardBody>

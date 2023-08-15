@@ -98,7 +98,7 @@ export const Tour = ({ id }: TourProps) => {
         </Heading>
         <Stepper
           index={activeStep}
-          colorScheme="orange"
+          colorScheme="tertiary"
           orientation="vertical"
           height="400px"
           gap="0"
@@ -123,16 +123,29 @@ export const Tour = ({ id }: TourProps) => {
         </Stepper>
       </Section>
       <Section>
-        <Card textAlign="center" borderRadius="md" variant="filled" size="lg">
+        <Card
+          textAlign="center"
+          borderRadius="md"
+          variant="filled"
+          backgroundColor="secondaryContainer"
+          size="lg"
+        >
           <CardBody>
             {/* <InfoOutlineIcon boxSize="24px" mr={0} /> */}
-            <Heading as="h3" mt={4} mb={4} fontSize="lg" fontWeight="bold">
+            <Heading
+              color="onSecondaryContainer"
+              as="h3"
+              mt={4}
+              mb={4}
+              fontSize="lg"
+              fontWeight="bold"
+            >
               Need Directions?
             </Heading>
-            <Text maxWidth="sm">
+            <Text color="onSecondaryContainer" maxWidth="sm">
               You can navigate your tour with ease using our handy Google Maps{' '}
               <Link
-                color="orange.500"
+                color="primary"
                 isExternal
                 href={tour?.googleMapsLink ?? ''}
               >

@@ -23,7 +23,7 @@ const thick = defineStyle({
 
 export const dividerTheme = defineStyleConfig({
   defaultProps: {
-    colorScheme: 'orange',
+    colorScheme: 'primary',
   },
   variants: { thin, thick },
 })

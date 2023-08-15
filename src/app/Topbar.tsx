@@ -35,7 +35,7 @@ export const Topbar = ({ ...rest }) => (
         <Button
           as="a"
           target="_blank"
-          colorScheme="orange"
+          colorScheme="primary"
           href={VENMO_PROFILE_URL}
           rel="noopener noreferrer"
         >

@@ -60,7 +60,13 @@ export const Footer = () => {
   }
 
   return (
-    <Box as="footer" role="contentinfo" py={{ base: '12', md: '16' }} px="4">
+    <Box
+      as="footer"
+      role="contentinfo"
+      py={{ base: '12', md: '16' }}
+      px="4"
+      backgroundColor="surface"
+    >
       <Container padding="0" size={{ base: 'sm', lg: 'md' }}>
         <Stack spacing={{ base: '12', md: '12' }}>
           <form onSubmit={handleSubmit}>
@@ -100,7 +106,7 @@ export const Footer = () => {
                     ) : null}
                   </InputGroup>
                   <Button
-                    colorScheme="orange"
+                    colorScheme="primary"
                     type="submit"
                     flexShrink={0}
                     isLoading={createSubscriberResult.fetching}
