@@ -1,11 +1,12 @@
 import { Button, Flex, Link, Spacer } from '@chakra-ui/react'
 import NextLink from 'next/link'
+import { VENMO_PROFILE_URL } from './constants'
 import { Logo } from './Logo'
 
 export const Topbar = ({ ...rest }) => (
   <Flex
     as="nav"
-    backgroundColor="white"
+    backgroundColor="background"
     height="96px"
     px="4"
     py="2"
@@ -31,7 +32,15 @@ export const Topbar = ({ ...rest }) => (
           Tours
         </Link>
         <Spacer width={4} />
-        <Button colorScheme="orange">Buy Us a Beer</Button>
+        <Button
+          as="a"
+          target="_blank"
+          colorScheme="orange"
+          href={VENMO_PROFILE_URL}
+          rel="noopener noreferrer"
+        >
+          Buy Us a Beer
+        </Button>
       </Flex>
     </Flex>
   </Flex>

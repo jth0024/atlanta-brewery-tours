@@ -16,9 +16,11 @@ import {
   Text,
 } from '@chakra-ui/react'
 import React, { FormEventHandler, useCallback, useState } from 'react'
-import { FaFacebook, FaInstagram, FaPatreon } from 'react-icons/fa'
+import { BiLogoVenmo } from 'react-icons/bi'
+import { FaFacebook, FaInstagram } from 'react-icons/fa'
 import { useMutation } from 'urql'
 import { gql } from '../__generated__'
+import { INSTAGRAM_PROFILE_URL, VENMO_PROFILE_URL } from './constants'
 
 const CREATE_SUBSCRIBER_MUTATION = gql(/* GraphQL */ `
   mutation CreateSubscriber($input: CreateSubscriberInput!) {
@@ -122,21 +124,25 @@ export const Footer = () => {
             <ButtonGroup variant="ghost">
               <IconButton
                 as="a"
-                href="#"
-                aria-label="Instagram"
+                target="_blank"
+                rel="noopener noreferrer"
+                href={INSTAGRAM_PROFILE_URL}
+                aria-label="Instagram Profile"
                 icon={<FaInstagram fontSize="1.25rem" />}
               />
               <IconButton
                 as="a"
                 href="#"
-                aria-label="Facebook"
+                aria-label="Facebook Profile"
                 icon={<FaFacebook fontSize="1.25rem" />}
               />
               <IconButton
                 as="a"
-                href="#"
-                aria-label="Patreon"
-                icon={<FaPatreon fontSize="1.25rem" />}
+                target="_blank"
+                aria-label="Venmo Profile"
+                href={VENMO_PROFILE_URL}
+                rel="noopener noreferrer"
+                icon={<BiLogoVenmo fontSize="1.25rem" />}
               />
             </ButtonGroup>
           </Stack>
