@@ -212,9 +212,9 @@ export const Tour = ({ id }: TourProps) => {
             </Heading>
             <Text color="onSecondaryContainer" maxWidth="sm">
               If you have any questions or need assistance during your
-              self-guided tour, our team is here to support you. Feel free to
+              self-guided tour, our team is here to support you! Feel free to
               reach out by replying to the email we sent, and we&apos;ll get
-              back to you as soon as possible!
+              back to you as soon as possible.
               {/* <Link
                 color="primary"
                 isExternal
@@ -222,7 +222,6 @@ export const Tour = ({ id }: TourProps) => {
               >
                 route
               </Link> */}
-              .
             </Text>
           </CardBody>
         </Card>
