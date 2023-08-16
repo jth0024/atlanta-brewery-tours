@@ -4,6 +4,7 @@ import {
   Button,
   Card,
   CardBody,
+  Flex,
   Heading,
   Link,
   Stack,
@@ -77,14 +78,16 @@ export const Tour = ({ id }: TourProps) => {
         </Tag>
         <Tag colorScheme="secondary">{tour?.distance} miles</Tag>
         {tour?.googleMapsEmbed ? (
-          <Card mt={6} borderRadius="lg" overflow="hidden" variant="unstyled">
-            <div
-              // eslint-disable-next-line react/no-danger
-              dangerouslySetInnerHTML={{
-                __html: tour?.googleMapsEmbed,
-              }}
-            />
-          </Card>
+          <Flex>
+            <Card mt={6} borderRadius="lg" overflow="hidden" variant="unstyled">
+              <div
+                // eslint-disable-next-line react/no-danger
+                dangerouslySetInnerHTML={{
+                  __html: tour?.googleMapsEmbed,
+                }}
+              />
+            </Card>
+          </Flex>
         ) : null}
         {tour?.googleMapsLink ? (
           <Button
