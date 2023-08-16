@@ -52,9 +52,9 @@ const typeDefs = gql`
     breweries: [Brewery!]!
     description: String
     distance: Float
-    emailTemplateID: String
     neighborhood: Neighborhood
     googleMapsLink: String
+    googleMapsEmbed: String
   }
 
   input CreateSubscriberInput {
@@ -173,8 +173,8 @@ const toTour = (response: GetPageResponse) => ({
   isFeatured: getCheckbox(response, 'Featured'),
   name: getTitle(response, 'Name'),
   distance: getNumber(response, 'Distance'),
-  emailTemplateID: getRichText(response, 'Email Template ID'),
   googleMapsLink: getRichText(response, 'Google Maps Link'),
+  googleMapsEmbed: getRichText(response, 'Google Maps Embed'),
 })
 
 const resolvers = {

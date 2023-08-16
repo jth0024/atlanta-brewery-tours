@@ -1,5 +1,7 @@
+import { ExternalLinkIcon } from '@chakra-ui/icons'
 import {
   Box,
+  Button,
   Card,
   CardBody,
   Heading,
@@ -30,8 +32,8 @@ export const TOUR_QUERY = gql(/* GraphQL */ `
       name
       distance
       description
-      emailTemplateID
       googleMapsLink
+      googleMapsEmbed
       breweries {
         id
         name
@@ -74,18 +76,30 @@ export const Tour = ({ id }: TourProps) => {
           {tour?.breweries.length} stops
         </Tag>
         <Tag colorScheme="secondary">{tour?.distance} miles</Tag>
-        {/* {tour?.googleMapsLink ? (
-          <Text fontSize="lg">
-            Navigate this tour with{' '}
-            <Link
-              color="orange.500"
-              isExternal
-              href={tour?.googleMapsLink ?? ''}
-            >
-              Google Maps
-            </Link>
-          </Text>
-        ) : null} */}
+        {tour?.googleMapsEmbed ? (
+          <Card mt={6} borderRadius="lg" overflow="hidden" variant="unstyled">
+            <div
+              // eslint-disable-next-line react/no-danger
+              dangerouslySetInnerHTML={{
+                __html: tour?.googleMapsEmbed,
+              }}
+            />
+          </Card>
+        ) : null}
+        {tour?.googleMapsLink ? (
+          <Button
+            as="a"
+            target="_blank"
+            rel="noopener noreferrer"
+            href={tour?.googleMapsLink ?? ''}
+            rightIcon={<ExternalLinkIcon />}
+            colorScheme="primary"
+            variant="link"
+            mt={8}
+          >
+            Open in Google Maps
+          </Button>
+        ) : null}
       </Section>
       <Section>
         <Heading as="h2" pb="6">
@@ -118,10 +132,10 @@ export const Tour = ({ id }: TourProps) => {
         </Stepper>
       </Section>
       <Section>
-        <Heading as="h2">Things to Know</Heading>
+        <Heading as="h2">Before You Go</Heading>
         <Text mt="4">
-          It&apos;s helpful to keep a few things in mind to ensure a smooth and
-          enjoyable tour:
+          As you prepare for your self-guided tour, it&apos;s helpful to keep a
+          few things in mind to ensure a smooth and enjoyable experience:
         </Text>
         <Stack mt="6" spacing={6}>
           <Card key={1} variant="outline" backgroundColor="surface">
@@ -201,7 +215,6 @@ export const Tour = ({ id }: TourProps) => {
           size="lg"
         >
           <CardBody>
-            {/* <InfoOutlineIcon boxSize="24px" mr={0} /> */}
             <Heading
               color="onSecondaryContainer"
               as="h3"
