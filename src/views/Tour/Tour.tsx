@@ -1,18 +1,9 @@
-import { InfoOutlineIcon } from '@chakra-ui/icons'
 import {
-  Alert,
-  AlertDescription,
-  AlertIcon,
-  AlertTitle,
   Box,
   Card,
   CardBody,
-  Divider,
   Heading,
-  HStack,
-  Icon,
-  Link,
-  List,
+  Stack,
   Step,
   StepDescription,
   StepIcon,
@@ -77,8 +68,10 @@ export const Tour = ({ id }: TourProps) => {
         <Text fontSize="lg" pb="6">
           {tour?.description}
         </Text>
-        <Tag mr="4">{tour?.breweries.length} stops</Tag>
-        <Tag>{tour?.distance} miles</Tag>
+        <Tag colorScheme="secondary" mr="4">
+          {tour?.breweries.length} stops
+        </Tag>
+        <Tag colorScheme="secondary">{tour?.distance} miles</Tag>
         {/* {tour?.googleMapsLink ? (
           <Text fontSize="lg">
             Navigate this tour with{' '}
@@ -94,11 +87,11 @@ export const Tour = ({ id }: TourProps) => {
       </Section>
       <Section>
         <Heading as="h2" pb="6">
-          Tour Information
+          Tour Route
         </Heading>
         <Stepper
           index={activeStep}
-          colorScheme="tertiary"
+          colorScheme="primary"
           orientation="vertical"
           height="400px"
           gap="0"
@@ -123,6 +116,81 @@ export const Tour = ({ id }: TourProps) => {
         </Stepper>
       </Section>
       <Section>
+        <Heading as="h2">Things to Know</Heading>
+        <Text mt="4">
+          It&apos;s helpful to keep a few things in mind to ensure a smooth and
+          enjoyable tour:
+        </Text>
+        <Stack mt="6" spacing={6}>
+          <Card key={1} variant="outline" backgroundColor="surface">
+            <CardBody>
+              <Heading as="h3" fontSize="lg">
+                1. Plan your route.
+              </Heading>
+              <Text pt="4">
+                We have provided a suggested route with the recommended
+                breweries to visit; however, you may consider customizing the
+                route based on your preferences, available time, or other
+                concerns.
+              </Text>
+            </CardBody>
+          </Card>
+          <Card key={2} variant="outline" backgroundColor="surface">
+            <CardBody>
+              <Heading as="h3" fontSize="lg">
+                2. Check operating hours.
+              </Heading>
+              <Text pt="4">
+                Check the operating hours of the breweries you plan to visit, as
+                they may vary. We recommend contacting the breweries in advance
+                or checking their websites for any updates or special events.
+              </Text>
+            </CardBody>
+          </Card>
+          <Card key={3} variant="outline" backgroundColor="surface">
+            <CardBody>
+              <Heading as="h3" fontSize="lg">
+                3. Drink responsibly.
+              </Heading>
+              <Text pt="4">
+                Always remember to drink responsibly and adhere to all federal,
+                state, and local alcohol laws. Bring a valid photo ID, as
+                breweries may ask for identification before serving alcohol.
+              </Text>
+            </CardBody>
+          </Card>
+          <Card variant="outline" backgroundColor="surface" key={4}>
+            <CardBody>
+              <Heading as="h3" fontSize="lg">
+                4. Capture some memories.
+              </Heading>
+              <Text pt="4">
+                Take photos and share your experiences on social media. You can
+                tag us using the hashtag&nbsp;
+                <Text as="code" color="primary">
+                  #AtlantaBreweryTours
+                </Text>
+                &nbsp;if you&apos;d like! We would love to see your adventures
+                and hear about your favorite brews.
+              </Text>
+            </CardBody>
+          </Card>
+          <Card variant="outline" backgroundColor="surface" key={5}>
+            <CardBody>
+              <Heading as="h3" fontSize="lg">
+                5. Enjoy the tour!
+              </Heading>
+              <Text pt="4">
+                Engage with the brewery staff, ask questions about their brewing
+                process, and sample a wide variety of beers! Our brewery tours
+                are the best way to experience Atlanta&apos;s craft beer
+                culture.
+              </Text>
+            </CardBody>
+          </Card>
+        </Stack>
+      </Section>
+      <Section>
         <Card
           textAlign="center"
           borderRadius="md"
@@ -140,17 +208,20 @@ export const Tour = ({ id }: TourProps) => {
               fontSize="lg"
               fontWeight="bold"
             >
-              Need Directions?
+              Need Help?
             </Heading>
             <Text color="onSecondaryContainer" maxWidth="sm">
-              You can navigate your tour with ease using our handy Google Maps{' '}
-              <Link
+              If you have any questions or need assistance during your
+              self-guided tour, our team is here to support you. Feel free to
+              reach out by replying to the email we sent, and we&apos;ll get
+              back to you as soon as possible!
+              {/* <Link
                 color="primary"
                 isExternal
                 href={tour?.googleMapsLink ?? ''}
               >
                 route
-              </Link>
+              </Link> */}
               .
             </Text>
           </CardBody>
