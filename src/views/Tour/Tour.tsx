@@ -228,7 +228,12 @@ export const Tour = ({ id }: TourProps) => {
             >
               Need Help?
             </Heading>
-            <Text color="onSecondaryContainer" maxWidth="sm">
+            <Text
+              color="onSecondaryContainer"
+              maxWidth="sm"
+              textAlign="center"
+              mx="auto"
+            >
               If you have any questions or need assistance during your
               self-guided tour, our team is here to support you!
               <br />
