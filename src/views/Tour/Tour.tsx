@@ -214,8 +214,11 @@ export const Tour = ({ id }: TourProps) => {
             </Heading>
             <Text color="onSecondaryContainer" maxWidth="sm">
               If you have any questions or need assistance during your
-              self-guided tour, our team is here to support you! Feel free to
-              reach out by replying to the email we sent or sending us a DM on{' '}
+              self-guided tour, our team is here to support you!
+              <br />
+              <br />
+              Feel free to reach out by replying to the email we sent or sending
+              us a DM on{' '}
               <Link
                 href={INSTAGRAM_PROFILE_URL}
                 color="tertiary"
