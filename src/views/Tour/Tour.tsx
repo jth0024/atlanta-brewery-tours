@@ -3,6 +3,7 @@ import {
   Card,
   CardBody,
   Heading,
+  Link,
   Stack,
   Step,
   StepDescription,
@@ -19,6 +20,7 @@ import {
 } from '@chakra-ui/react'
 import { useQuery } from 'urql'
 import { gql } from '../../__generated__'
+import { INSTAGRAM_PROFILE_URL } from '../../app'
 import { Section } from '../../lib'
 
 export const TOUR_QUERY = gql(/* GraphQL */ `
@@ -213,8 +215,16 @@ export const Tour = ({ id }: TourProps) => {
             <Text color="onSecondaryContainer" maxWidth="sm">
               If you have any questions or need assistance during your
               self-guided tour, our team is here to support you! Feel free to
-              reach out by replying to the email we sent, and we&apos;ll get
-              back to you as soon as possible.
+              reach out by replying to the email we sent or sending us a DM on{' '}
+              <Link
+                href={INSTAGRAM_PROFILE_URL}
+                color="tertiary"
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                Instagram
+              </Link>
+              . We&apos;ll get back to you as soon as possible!
               {/* <Link
                 color="primary"
                 isExternal
