@@ -79,8 +79,16 @@ export const Tour = ({ id }: TourProps) => {
         <Tag colorScheme="secondary">{tour?.distance} miles</Tag>
         {tour?.googleMapsEmbed ? (
           <Flex>
-            <Card mt={6} borderRadius="lg" overflow="hidden" variant="unstyled">
+            <Card
+              flexGrow="1"
+              mt={6}
+              borderRadius="lg"
+              overflow="hidden"
+              variant="unstyled"
+              height={{ base: '250px', sm: '300px', md: '350px', lg: '400px' }}
+            >
               <div
+                style={{ height: '100%', width: '100%' }}
                 // eslint-disable-next-line react/no-danger
                 dangerouslySetInnerHTML={{
                   __html: tour?.googleMapsEmbed,
@@ -124,7 +132,7 @@ export const Tour = ({ id }: TourProps) => {
                   active={<StepNumber />}
                 />
               </StepIndicator>
-              <Box flexShrink="0">
+              <Box flexShrink="1">
                 <StepTitle>{brewery.name}</StepTitle>
                 <StepDescription>{brewery.address}</StepDescription>
               </Box>
