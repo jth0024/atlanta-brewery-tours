@@ -1,6 +1,9 @@
 import { ExternalLinkIcon } from '@chakra-ui/icons'
 import {
   Box,
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
   Button,
   Card,
   CardBody,
@@ -21,6 +24,7 @@ import {
   Text,
   useSteps,
 } from '@chakra-ui/react'
+import NextLink from 'next/link'
 import { useQuery } from 'urql'
 import { gql } from '../../__generated__'
 import { INSTAGRAM_PROFILE_URL } from '../../app'
@@ -67,10 +71,20 @@ export const Tour = ({ id }: TourProps) => {
   return (
     <div>
       <Section>
-        <Heading as="h2" size="xl" pb="6" textTransform="capitalize">
+        <Breadcrumb>
+          <BreadcrumbItem>
+            <BreadcrumbLink as={NextLink} href="/#tours">
+              Tours
+            </BreadcrumbLink>
+          </BreadcrumbItem>
+          <BreadcrumbItem isCurrentPage>
+            <BreadcrumbLink>Tour Details</BreadcrumbLink>
+          </BreadcrumbItem>
+        </Breadcrumb>
+        <Heading as="h2" size="xl" pt="6" textTransform="capitalize">
           {tour?.name}
         </Heading>
-        <Text fontSize="lg" pb="6">
+        <Text fontSize="lg" py="6">
           {tour?.description}
         </Text>
         <Tag colorScheme="secondary" mr="4">
