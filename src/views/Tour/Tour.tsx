@@ -9,6 +9,7 @@ import {
   CardBody,
   Flex,
   Heading,
+  Icon,
   Link,
   Stack,
   Step,
@@ -25,6 +26,15 @@ import {
   useSteps,
 } from '@chakra-ui/react'
 import NextLink from 'next/link'
+import {
+  FaBeer,
+  FaCameraRetro,
+  FaClock,
+  FaHandPaper,
+  FaMapMarkedAlt,
+  FaQuestionCircle,
+  FaSmileBeam,
+} from 'react-icons/fa'
 import { useQuery } from 'urql'
 import { gql } from '../../__generated__'
 import { INSTAGRAM_PROFILE_URL } from '../../app'
@@ -165,9 +175,12 @@ export const Tour = ({ id }: TourProps) => {
         <Stack mt="6" spacing={6}>
           <Card key={1} variant="outline" backgroundColor="surface">
             <CardBody>
-              <Heading as="h3" fontSize="lg">
-                1. Plan your route.
-              </Heading>
+              <Flex>
+                <Icon as={FaMapMarkedAlt} fontSize="lg" mb={1} mr={3} />
+                <Heading as="h3" fontSize="lg">
+                  Plan your route.
+                </Heading>
+              </Flex>
               <Text pt="4">
                 We have provided a suggested route with the recommended
                 breweries to visit; however, you may consider customizing the
@@ -178,9 +191,12 @@ export const Tour = ({ id }: TourProps) => {
           </Card>
           <Card key={2} variant="outline" backgroundColor="surface">
             <CardBody>
-              <Heading as="h3" fontSize="lg">
-                2. Check operating hours.
-              </Heading>
+              <Flex alignItems="center">
+                <Icon as={FaClock} fontSize="lg" mb={1} mr={3} />
+                <Heading as="h3" fontSize="lg">
+                  Check operating hours.
+                </Heading>
+              </Flex>
               <Text pt="4">
                 Check the operating hours of the breweries you plan to visit, as
                 they may vary. We recommend contacting the breweries in advance
@@ -190,9 +206,12 @@ export const Tour = ({ id }: TourProps) => {
           </Card>
           <Card key={3} variant="outline" backgroundColor="surface">
             <CardBody>
-              <Heading as="h3" fontSize="lg">
-                3. Drink responsibly.
-              </Heading>
+              <Flex alignItems="center">
+                <Icon as={FaBeer} fontSize="lg" mb={1} mr={3} />
+                <Heading as="h3" fontSize="lg">
+                  Drink responsibly.
+                </Heading>
+              </Flex>
               <Text pt="4">
                 Always remember to drink responsibly and adhere to all federal,
                 state, and local alcohol laws. Bring a valid photo ID, as
@@ -202,9 +221,12 @@ export const Tour = ({ id }: TourProps) => {
           </Card>
           <Card variant="outline" backgroundColor="surface" key={4}>
             <CardBody>
-              <Heading as="h3" fontSize="lg">
-                4. Capture some memories.
-              </Heading>
+              <Flex alignItems="center">
+                <Icon as={FaCameraRetro} fontSize="lg" mb={0.5} mr={3} />
+                <Heading as="h3" fontSize="lg">
+                  Capture some memories.
+                </Heading>
+              </Flex>
               <Text pt="4">
                 Take photos and share your experiences on social media. You can
                 tag us using the hashtag&nbsp;
@@ -218,9 +240,12 @@ export const Tour = ({ id }: TourProps) => {
           </Card>
           <Card variant="outline" backgroundColor="surface" key={5}>
             <CardBody>
-              <Heading as="h3" fontSize="lg">
-                5. Enjoy the tour!
-              </Heading>
+              <Flex alignItems="center">
+                <Icon as={FaSmileBeam} fontSize="lg" mb={1} mr={3} />
+                <Heading as="h3" fontSize="lg">
+                  Enjoy the tour!
+                </Heading>
+              </Flex>
               <Text pt="4">
                 Engage with the brewery staff, ask questions about their brewing
                 process, and sample a wide variety of beers! Our brewery tours
@@ -240,6 +265,8 @@ export const Tour = ({ id }: TourProps) => {
           size="lg"
         >
           <CardBody>
+            {/* <Flex alignItems="center" justifyContent="center"> */}
+            {/* <Icon as={FaHandPaper} mb={1} fontSize="lg" mr={3} /> */}
             <Heading
               color="onSecondaryContainer"
               as="h3"
@@ -250,6 +277,7 @@ export const Tour = ({ id }: TourProps) => {
             >
               Need Help?
             </Heading>
+            {/* </Flex> */}
             <Text
               color="onSecondaryContainer"
               maxWidth="sm"
