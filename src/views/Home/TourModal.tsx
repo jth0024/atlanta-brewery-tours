@@ -99,7 +99,12 @@ export const TourModal = ({ id, isOpen, onClose, name }: TourModalProps) => {
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} motionPreset="slideInBottom">
+    <Modal
+      id={id}
+      isOpen={isOpen}
+      onClose={onClose}
+      motionPreset="slideInBottom"
+    >
       <ModalOverlay p="0" />
       <ModalContent
         backgroundColor="surface"
