@@ -1,4 +1,5 @@
 import { executeExchange } from '@urql/exchange-execute'
+import Head from 'next/head'
 import { initUrqlClient, withUrqlClient } from 'next-urql'
 import { cacheExchange, dedupExchange, ssrExchange } from 'urql'
 import { API_URL, schema } from '../app'
@@ -31,7 +32,22 @@ export const getStaticProps = async () => {
   }
 }
 
-const HomePage = () => <Home />
+const HomePage = () => (
+  <>
+    <Head key="home-page-head">
+      <title>Atlanta Brewery Tours</title>
+      <meta
+        name="description"
+        content={`Experience the best craft beers in Georgia with Atlanta Brewery Tours, 
+            a free self-guided tour service! Discover new favorites, learn about the brewing process, 
+            and enjoy a fun-filled walking or scooter tour with friends or fellow beer enthusiasts. 
+            Book your free tour today!`}
+      />
+      <link rel="canonical" href="https://www.atlantabrewerytours.com" />
+    </Head>
+    <Home />
+  </>
+)
 
 export default withUrqlClient(
   () => ({
