@@ -1,10 +1,9 @@
-import { Heading, Link, Text } from '@chakra-ui/react'
+import { Heading, Image, Link, Text } from '@chakra-ui/react'
 import {
   BlockObjectResponse,
   PartialBlockObjectResponse,
   RichTextItemResponse,
 } from '@notionhq/client/build/src/api-endpoints'
-// import NextImage from 'next/image'
 
 interface RichTextProps {
   content: RichTextItemResponse
@@ -71,24 +70,28 @@ export const BlockRenderer = ({ block }: BlockRendererProps) => {
           {toRichText(block.heading_3?.rich_text ?? [])}
         </Heading>
       )
-    // case 'image':
-    //   return block.image.type === 'external' ? (
-    //     <Image
-    //       as={NextImage}
-    //       borderRadius="lg"
-    //       // alt={block.image. ?? ''}
-    //       src={block.image.external.url ?? ''}
-    //       width="100%"
-    //     />
-    //   ) : (
-    //     <Image
-    //       as={NextImage}
-    //       borderRadius="lg"
-    //       // alt={block.image.caption ?? ''}
-    //       src={block.image.file.url}
-    //       width="100%"
-    //     />
-    //   )
+    case 'image':
+      return block.image.type === 'external' ? (
+        <Image
+          borderRadius="lg"
+          alt={
+            block.image.caption.map(caption => caption.plain_text).join(' ') ??
+            ''
+          }
+          src={block.image.external.url ?? ''}
+          width="100%"
+        />
+      ) : (
+        <Image
+          borderRadius="lg"
+          alt={
+            block.image.caption.map(caption => caption.plain_text).join(' ') ??
+            ''
+          }
+          src={block.image.file.url}
+          width="100%"
+        />
+      )
 
     case 'paragraph':
       return (

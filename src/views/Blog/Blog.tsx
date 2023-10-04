@@ -73,16 +73,12 @@ export const Blog = () => {
                   borderRadius="lg"
                 >
                   <CardHeader>
-                    <HStack>
+                    <HStack spacing={2}>
                       {status === 'DRAFT' ? (
                         <Tag colorScheme="tertiary">Draft</Tag>
                       ) : null}
                       {tags.map(tag => (
-                        <Tag
-                          textDecoration="capitalize"
-                          key={tag}
-                          colorScheme="secondary"
-                        >
+                        <Tag key={tag} colorScheme="secondary">
                           {capitalize(tag)}
                         </Tag>
                       ))}

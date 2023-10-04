@@ -9,6 +9,7 @@ import {
   Text,
 } from '@chakra-ui/react'
 import { ListBlockChildrenResponse } from '@notionhq/client/build/src/api-endpoints'
+import { capitalize } from 'lodash'
 import Head from 'next/head'
 import NextLink from 'next/link'
 import { IoChevronBackOutline } from 'react-icons/io5'
@@ -20,14 +21,15 @@ import { BlockRenderer } from './BlockRenderer'
 export const BLOG_POST_QUERY = gql(/* GraphQL */ `
   query BlogPost($slug: String!) {
     blogPost: blogPostBySlug(slug: $slug) {
-      id
+      content
       date
       excerpt
+      id
       imageSrc
-      title
       slug
+      status
+      title
       tags
-      content
     }
   }
 `)
@@ -50,6 +52,7 @@ export const BlogPost = ({ slug }: BlogPostProps) => {
   }
 
   const content = parse<ListBlockChildrenResponse>(blogPost.content ?? '')
+  const titlePrefix = blogPost.title ? `${blogPost.title} | }` : ''
 
   return (
     <Container maxW={['container.sm', 'container.sm', '768px']} py="6">
@@ -59,10 +62,7 @@ export const BlogPost = ({ slug }: BlogPostProps) => {
         <meta property="twitter:title" content={blogPost?.title ?? ''} />
         <meta name="description" content={blogPost?.excerpt ?? ''} />
         <meta property="og:description" content={blogPost?.excerpt ?? ''} />
-        <title>
-          {blogPost.title ? `${blogPost.title} | }` : ''}
-          Blog | Atlanta Brewery Tours
-        </title>
+        <title>{`${titlePrefix}Blog | Atlanta Brewery Tours`}</title>
       </Head>
       <Stack align="left" spacing="4">
         <Button
@@ -93,10 +93,13 @@ export const BlogPost = ({ slug }: BlogPostProps) => {
         </Text>
         <Heading size="xl">{blogPost.title}</Heading>
         {blogPost.tags.length ? (
-          <HStack spacing={4}>
+          <HStack spacing={2}>
+            {blogPost.status === 'DRAFT' ? (
+              <Tag colorScheme="tertiary">Draft</Tag>
+            ) : null}
             {blogPost.tags.map(tag => (
               <Tag key={tag} colorScheme="secondary">
-                {tag}
+                {capitalize(tag)}
               </Tag>
             ))}
           </HStack>
