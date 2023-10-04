@@ -1,6 +1,11 @@
 import { gql } from 'graphql-tag'
 
 export const typeDefs = gql`
+  enum BlogPostStatus {
+    DRAFT
+    PUBLISHED
+  }
+
   type BlogPost {
     id: ID!
     title: String
@@ -10,6 +15,7 @@ export const typeDefs = gql`
     content: String
     imageSrc: String
     tags: [String!]!
+    status: BlogPostStatus!
   }
 
   type Brewery {

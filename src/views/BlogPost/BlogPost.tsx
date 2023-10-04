@@ -9,6 +9,7 @@ import {
   Text,
 } from '@chakra-ui/react'
 import { ListBlockChildrenResponse } from '@notionhq/client/build/src/api-endpoints'
+import Head from 'next/head'
 import NextLink from 'next/link'
 import { IoChevronBackOutline } from 'react-icons/io5'
 import { useQuery } from 'urql'
@@ -21,6 +22,7 @@ export const BLOG_POST_QUERY = gql(/* GraphQL */ `
     blogPost: blogPostBySlug(slug: $slug) {
       id
       date
+      excerpt
       imageSrc
       title
       slug
@@ -51,6 +53,17 @@ export const BlogPost = ({ slug }: BlogPostProps) => {
 
   return (
     <Container maxW={['container.sm', 'container.sm', '768px']} py="6">
+      <Head>
+        <meta name="title" content={blogPost.title ?? ''} />
+        <meta property="og:title" content={blogPost?.title ?? ''} />
+        <meta property="twitter:title" content={blogPost?.title ?? ''} />
+        <meta name="description" content={blogPost?.excerpt ?? ''} />
+        <meta property="og:description" content={blogPost?.excerpt ?? ''} />
+        <title>
+          {blogPost.title ? `${blogPost.title} | }` : ''}
+          Blog | Atlanta Brewery Tours
+        </title>
+      </Head>
       <Stack align="left" spacing="4">
         <Button
           as={NextLink}

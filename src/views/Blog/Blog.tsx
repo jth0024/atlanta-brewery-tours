@@ -20,14 +20,14 @@ import { Section } from '../../lib'
 export const BLOG_QUERY = gql(/* GraphQL */ `
   query Blog {
     blogPosts {
+      date
+      excerpt
       id
       imageSrc
-      excerpt
-      title
-      content
+      status
       slug
-      date
       tags
+      title
     }
   }
 `)
@@ -56,61 +56,66 @@ export const Blog = () => {
           Recent Posts
         </Heading>
         <Stack spacing="6">
-          {data?.blogPosts?.map(({ date, id, title, excerpt, tags, slug }) => (
-            <Box key={id}>
-              <Card
-                variant="outline"
-                backgroundColor="surface"
-                borderRadius="lg"
-              >
-                <CardHeader>
-                  <HStack>
-                    {tags.map(tag => (
-                      <Tag
-                        textDecoration="capitalize"
-                        key={tag}
-                        colorScheme="secondary"
-                      >
-                        {tag}
-                      </Tag>
-                    ))}
-                  </HStack>
-                  <Heading as="h3" size="md" mt={6}>
-                    {title}
-                  </Heading>
-                </CardHeader>
-                <CardBody>
-                  <Text>{excerpt}</Text>
-                </CardBody>
-                <CardFooter justifyContent="space-between" alignItems="center">
-                  <Text
-                    color="onSurfaceVariant"
-                    fontWeight="bold"
-                    fontSize="sm"
-                    mr="auto"
+          {data?.blogPosts
+            ?.filter(({ status }) => status === 'PUBLISHED')
+            .map(({ date, id, title, excerpt, tags, slug }) => (
+              <Box key={id}>
+                <Card
+                  variant="outline"
+                  backgroundColor="surface"
+                  borderRadius="lg"
+                >
+                  <CardHeader>
+                    <HStack>
+                      {tags.map(tag => (
+                        <Tag
+                          textDecoration="capitalize"
+                          key={tag}
+                          colorScheme="secondary"
+                        >
+                          {tag}
+                        </Tag>
+                      ))}
+                    </HStack>
+                    <Heading as="h3" size="md" mt={6}>
+                      {title}
+                    </Heading>
+                  </CardHeader>
+                  <CardBody>
+                    <Text>{excerpt}</Text>
+                  </CardBody>
+                  <CardFooter
+                    justifyContent="space-between"
+                    alignItems="center"
                   >
-                    {date
-                      ? new Date(date).toLocaleDateString('en-US', {
-                          month: 'long',
-                          day: 'numeric',
-                          year: 'numeric',
-                        })
-                      : null}
-                  </Text>
-                  <Button
-                    as={NextLink}
-                    href={`/blog/${slug}`}
-                    colorScheme="primary"
-                    variant="link"
-                    rightIcon={<IoChevronForwardOutline />}
-                    ml="auto"
-                  >
-                    Read More
-                  </Button>
-                </CardFooter>
-              </Card>
-            </Box>
-          ))}
+                    <Text
+                      color="onSurfaceVariant"
+                      fontWeight="bold"
+                      fontSize="sm"
+                      mr="auto"
+                    >
+                      {date
+                        ? new Date(date).toLocaleDateString('en-US', {
+                            month: 'long',
+                            day: 'numeric',
+                            year: 'numeric',
+                          })
+                        : null}
+                    </Text>
+                    <Button
+                      as={NextLink}
+                      href={`/blog/${slug}`}
+                      colorScheme="primary"
+                      variant="link"
+                      rightIcon={<IoChevronForwardOutline />}
+                      ml="auto"
+                    >
+                      Read More
+                    </Button>
+                  </CardFooter>
+                </Card>
+              </Box>
+            ))}
         </Stack>
       </Section>
     </Box>

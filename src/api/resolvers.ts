@@ -5,7 +5,7 @@ import {
   ListBlockChildrenResponse,
   QueryDatabaseParameters,
 } from '@notionhq/client/build/src/api-endpoints'
-import { get, identity } from 'lodash'
+import { get, identity, toUpper } from 'lodash'
 
 const auth = process.env.NOTION_API_KEY ?? ''
 const hubspotToken = process.env.HUBSPOT_ACCESS_TOKEN ?? ''
@@ -34,6 +34,11 @@ const getRichText = (response: GetPageResponse, field: string): string =>
   get(response, ['properties', field, 'rich_text'], [])
     .map(({ plain_text: plainText }: { plain_text: string }) => plainText)
     .join(' ')
+const getSelect = (
+  response: GetPageResponse,
+  field: string,
+  fallback = '',
+): string => get(response, ['properties', field, 'select', 'name'], fallback)
 const getTitle = (response: GetPageResponse, field: string): string =>
   get(response, ['properties', field, 'title'], [])
     .map(({ plain_text: plainText }: { plain_text: string }) => plainText)
@@ -89,13 +94,14 @@ const retrieveRelation = async (
 }
 
 const toBlogPost = (response: GetPageResponse) => ({
-  id: getId(response),
-  title: getTitle(response, 'Title'),
-  slug: getRichText(response, 'Slug'),
   date: getCreatedTime(response, 'Created'),
   excerpt: getRichText(response, 'Excerpt'),
+  id: getId(response),
   imageSrc: getImageFile(response, 'Image'),
+  slug: getRichText(response, 'Slug'),
+  status: toUpper(getSelect(response, 'Status', 'DRAFT')),
   tags: getMultiSelect(response, 'Tags'),
+  title: getTitle(response, 'Title'),
 })
 
 const toBrewery = (response: GetPageResponse) => ({
