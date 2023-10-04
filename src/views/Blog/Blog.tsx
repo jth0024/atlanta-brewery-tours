@@ -52,7 +52,7 @@ export const Blog = () => {
         display="flex"
         justifyContent="center"
         pt={24}
-        pb={20}
+        pb={16}
       >
         <Heading
           as="h1"
