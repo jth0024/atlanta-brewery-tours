@@ -1,99 +1,33 @@
 /* eslint-disable no-underscore-dangle */
-import { makeExecutableSchema } from '@graphql-tools/schema'
 import { Client, isFullPage } from '@notionhq/client'
 import {
   GetPageResponse,
+  ListBlockChildrenResponse,
   QueryDatabaseParameters,
 } from '@notionhq/client/build/src/api-endpoints'
-import { gql } from 'graphql-tag'
-import { get } from 'lodash'
+import { get, identity } from 'lodash'
 
 const auth = process.env.NOTION_API_KEY ?? ''
 const hubspotToken = process.env.HUBSPOT_ACCESS_TOKEN ?? ''
 const toursDB = process.env.NOTION_TOURS_DATABASE_ID ?? ''
 const regionsDB = process.env.NOTION_REGIONS_DATABASE_ID ?? ''
 const breweriesDB = process.env.NOTION_BREWERIES_DATABASE_ID ?? ''
+const blogPostsDB = process.env.NOTION_BLOG_POSTS_DATABASE_ID ?? ''
 const neighborhoodsDB = process.env.NOTION_NEIGHBORHOODS_DATABASE_ID ?? ''
 
 export const client = new Client({ auth })
 
-const typeDefs = gql`
-  type Brewery {
-    id: ID!
-    name: String
-    neighborhood: Neighborhood
-    address: String
-  }
-
-  type Neighborhood {
-    id: ID!
-    name: String
-    description: String
-    imageSrc: String
-    slug: String
-    regions: [Region!]!
-  }
-
-  type Region {
-    id: ID!
-    name: String
-  }
-
-  type Subscriber {
-    email: String!
-    firstName: String
-    lastName: String
-  }
-
-  type Tour {
-    id: ID!
-    isFeatured: Boolean
-    name: String
-    breweries: [Brewery!]!
-    description: String
-    distance: Float
-    neighborhood: Neighborhood
-    googleMapsLink: String
-    googleMapsEmbed: String
-  }
-
-  input CreateSubscriberInput {
-    email: String!
-    firstName: String
-    lastName: String
-    tourName: String
-    tourID: String
-  }
-
-  type CreateSubscriberResult {
-    subscriber: Subscriber!
-    tour: Tour
-  }
-
-  type Mutation {
-    createSubscriber(input: CreateSubscriberInput!): CreateSubscriberResult!
-  }
-
-  input NeighborhoodsInput {
-    slug: String
-  }
-
-  type Query {
-    breweries: [Brewery!]!
-    brewery(id: ID!): Brewery
-    neighborhoods(filter: NeighborhoodsInput): [Neighborhood!]!
-    neighborhood(id: ID!): Neighborhood
-    regions: [Region!]!
-    tours: [Tour!]!
-    tour(id: ID!): Tour
-  }
-`
-
 const getCheckbox = (response: GetPageResponse, field: string): boolean =>
   get(response, ['properties', field, 'checkbox'], false)
+const getCreatedTime = (response: GetPageResponse, field: string): string =>
+  get(response, ['properties', field, 'created_time'], '')
 const getId = (response: GetPageResponse): string => get(response, 'id', '')
 const getImageFile = (response: GetPageResponse, field: string): string =>
   get(response, ['properties', field, 'files', 0, 'file', 'url'], '')
+const getMultiSelect = (response: GetPageResponse, field: string): string[] =>
+  get(response, ['properties', field, 'multi_select'], []).map(
+    ({ name }: { name: string }) => name,
+  )
 const getNumber = (response: GetPageResponse, field: string): number =>
   get(response, ['properties', field, 'number'], 0)
 const getRichText = (response: GetPageResponse, field: string): string =>
@@ -125,6 +59,16 @@ const retrievePage = async (
   return mapper(result)
 }
 
+const retrievePageContent = async <T>(
+  id: string,
+  mapper: (response: ListBlockChildrenResponse) => T = identity,
+) => {
+  const result = await client.blocks.children.list({
+    block_id: id,
+  })
+  return mapper(result)
+}
+
 const retrieveRelation = async (
   pageId: string,
   propertyId: string,
@@ -143,6 +87,16 @@ const retrieveRelation = async (
   )
   return pages.map(mapper)
 }
+
+const toBlogPost = (response: GetPageResponse) => ({
+  id: getId(response),
+  title: getTitle(response, 'Title'),
+  slug: getRichText(response, 'Slug'),
+  date: getCreatedTime(response, 'Created'),
+  excerpt: getRichText(response, 'Excerpt'),
+  imageSrc: getImageFile(response, 'Image'),
+  tags: getMultiSelect(response, 'Tags'),
+})
 
 const toBrewery = (response: GetPageResponse) => ({
   _neighborhoodId: get(response, 'properties.Neighborhood.id', ''),
@@ -177,7 +131,7 @@ const toTour = (response: GetPageResponse) => ({
   googleMapsEmbed: getRichText(response, 'Google Maps Embed'),
 })
 
-const resolvers = {
+export const resolvers = {
   Mutation: {
     async createSubscriber(
       _: null,
@@ -268,6 +222,23 @@ const resolvers = {
     },
   },
   Query: {
+    async blogPost(_: null, args: { id: string }) {
+      return retrievePage(args.id, toBlogPost)
+    },
+    async blogPostBySlug(_: null, args: { slug: string }) {
+      const filter = {
+        property: 'Slug',
+        rich_text: {
+          equals: args.slug,
+        },
+      }
+
+      const results = await queryDatabase(blogPostsDB, toBlogPost, filter)
+      return results[0]
+    },
+    async blogPosts() {
+      return queryDatabase(blogPostsDB, toBlogPost)
+    },
     async brewery(_: null, args: { id: string }) {
       return retrievePage(args.id, toBrewery)
     },
@@ -296,6 +267,13 @@ const resolvers = {
     },
     async tours() {
       return queryDatabase(toursDB, toTour)
+    },
+  },
+  BlogPost: {
+    async content(parent: { id: string }) {
+      console.log(parent)
+      const result = await retrievePageContent(parent.id)
+      return JSON.stringify(result)
     },
   },
   Brewery: {
@@ -327,5 +305,3 @@ const resolvers = {
     },
   },
 }
-
-export const schema = makeExecutableSchema({ typeDefs, resolvers })

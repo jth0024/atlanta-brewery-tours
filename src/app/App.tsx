@@ -1,3 +1,4 @@
+import 'react-notion-x/src/styles.css'
 import { ChakraProvider } from '@chakra-ui/react'
 import React from 'react'
 import { Layout } from './Layout'
