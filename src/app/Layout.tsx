@@ -8,7 +8,7 @@ interface LayoutProps {
 }
 
 export const Layout = ({ children }: LayoutProps) => (
-  <Box color="onSurface">
+  <Box backgroundColor="background" color="onSurface">
     <Box position="sticky" top="0" zIndex="1">
       <Topbar />
     </Box>
