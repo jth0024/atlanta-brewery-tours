@@ -1,9 +1,12 @@
 import {
+  Box,
   Button,
+  Center,
   Container,
   Heading,
   HStack,
   Image,
+  Link,
   Stack,
   Tag,
   Text,
@@ -48,7 +51,25 @@ export const BlogPost = ({ slug }: BlogPostProps) => {
   const { blogPost = null } = data ?? {}
 
   if (!blogPost) {
-    return null
+    return (
+      <Container maxW={['container.sm', 'container.sm', '768px']} py="6">
+        <Center minHeight="70vh">
+          <Box mx="auto" textAlign="center">
+            <Heading as="h1" size="md">
+              404 Not Found
+            </Heading>
+            <Text pt={4}>
+              Hmm, we&apos;re having trouble finding that blog post.
+              <br />
+              Would you like to{' '}
+              <Link color="primary" as={NextLink} href="/blog">
+                go back?
+              </Link>
+            </Text>
+          </Box>
+        </Center>
+      </Container>
+    )
   }
 
   const content = parse<ListBlockChildrenResponse>(blogPost.content ?? '')
