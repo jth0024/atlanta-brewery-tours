@@ -11,7 +11,9 @@ import {
   Tag,
   Text,
 } from '@chakra-ui/react'
+import { capitalize } from 'lodash'
 import NextLink from 'next/link'
+import { useRouter } from 'next/router'
 import { IoChevronForwardOutline } from 'react-icons/io5'
 import { useQuery } from 'urql'
 import { gql } from '../../__generated__'
@@ -34,6 +36,12 @@ export const BLOG_QUERY = gql(/* GraphQL */ `
 
 export const Blog = () => {
   const [{ data }] = useQuery({ query: BLOG_QUERY })
+  const { query } = useRouter()
+  const allowDrafts = Boolean(query?.preview)
+  const filteredPosts =
+    (allowDrafts
+      ? data?.blogPosts
+      : data?.blogPosts?.filter(({ status }) => status === 'PUBLISHED')) ?? []
 
   return (
     <Box backgroundColor="background">
@@ -56,9 +64,8 @@ export const Blog = () => {
           Recent Posts
         </Heading>
         <Stack spacing="6">
-          {data?.blogPosts
-            ?.filter(({ status }) => status === 'PUBLISHED')
-            .map(({ date, id, title, excerpt, tags, slug }) => (
+          {filteredPosts.map(
+            ({ date, id, title, excerpt, tags, slug, status }) => (
               <Box key={id}>
                 <Card
                   variant="outline"
@@ -67,13 +74,16 @@ export const Blog = () => {
                 >
                   <CardHeader>
                     <HStack>
+                      {status === 'DRAFT' ? (
+                        <Tag colorScheme="tertiary">Draft</Tag>
+                      ) : null}
                       {tags.map(tag => (
                         <Tag
                           textDecoration="capitalize"
                           key={tag}
                           colorScheme="secondary"
                         >
-                          {tag}
+                          {capitalize(tag)}
                         </Tag>
                       ))}
                     </HStack>
@@ -115,7 +125,8 @@ export const Blog = () => {
                   </CardFooter>
                 </Card>
               </Box>
-            ))}
+            ),
+          )}
         </Stack>
       </Section>
     </Box>
