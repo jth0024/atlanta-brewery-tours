@@ -1,4 +1,3 @@
-import { ChevronRightIcon } from '@chakra-ui/icons'
 import {
   Box,
   Button,
@@ -13,6 +12,7 @@ import {
   Text,
 } from '@chakra-ui/react'
 import NextLink from 'next/link'
+import { IoChevronForwardOutline } from 'react-icons/io5'
 import { useQuery } from 'urql'
 import { gql } from '../../__generated__'
 import { Section } from '../../lib'
@@ -26,6 +26,7 @@ export const BLOG_QUERY = gql(/* GraphQL */ `
       title
       content
       slug
+      date
       tags
     }
   }
@@ -55,7 +56,7 @@ export const Blog = () => {
           Recent Posts
         </Heading>
         <Stack spacing="6">
-          {data?.blogPosts?.map(({ id, title, excerpt, tags, slug }) => (
+          {data?.blogPosts?.map(({ date, id, title, excerpt, tags, slug }) => (
             <Box key={id}>
               <Card
                 variant="outline"
@@ -65,25 +66,44 @@ export const Blog = () => {
                 <CardHeader>
                   <HStack>
                     {tags.map(tag => (
-                      <Tag key={tag} colorScheme="secondary">
+                      <Tag
+                        textDecoration="capitalize"
+                        key={tag}
+                        colorScheme="secondary"
+                      >
                         {tag}
                       </Tag>
                     ))}
                   </HStack>
-                  <Heading as="h3" size="sm" mt={6}>
+                  <Heading as="h3" size="md" mt={6}>
                     {title}
                   </Heading>
                 </CardHeader>
                 <CardBody>
                   <Text>{excerpt}</Text>
                 </CardBody>
-                <CardFooter justifyContent="flex-end">
+                <CardFooter justifyContent="space-between" alignItems="center">
+                  <Text
+                    color="onSurfaceVariant"
+                    fontWeight="bold"
+                    fontSize="sm"
+                    mr="auto"
+                  >
+                    {date
+                      ? new Date(date).toLocaleDateString('en-US', {
+                          month: 'long',
+                          day: 'numeric',
+                          year: 'numeric',
+                        })
+                      : null}
+                  </Text>
                   <Button
                     as={NextLink}
                     href={`/blog/${slug}`}
-                    colorScheme="secondary"
-                    variant="ghost"
-                    rightIcon={<ChevronRightIcon />}
+                    colorScheme="primary"
+                    variant="link"
+                    rightIcon={<IoChevronForwardOutline />}
+                    ml="auto"
                   >
                     Read More
                   </Button>
