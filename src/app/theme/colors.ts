@@ -178,4 +178,7 @@ export const colorTokens = {
   onSurfaceVariant: semanticColor('#424940', '#c2c9bd'),
   // Outline
   outline: semanticColor('#72796f', '#8c9388'),
+  border: semanticColor('neutral.100', 'neutral.800'),
+  neutralLight: semanticColor('white', 'black'),
+  neutralDark: semanticColor('black', 'white'),
 }

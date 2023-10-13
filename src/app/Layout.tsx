@@ -1,5 +1,5 @@
 import { Box, Divider } from '@chakra-ui/react'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Footer } from './Footer'
 import { Topbar } from './Topbar'
 
@@ -7,13 +7,46 @@ interface LayoutProps {
   children: React.ReactNode
 }
 
-export const Layout = ({ children }: LayoutProps) => (
-  <Box backgroundColor="background" color="onSurface">
-    <Box position="sticky" top="0" zIndex="1">
-      <Topbar />
+export const Layout = ({ children }: LayoutProps) => {
+  const [opacity, setOpacity] = useState(0)
+
+  useEffect(() => {
+    const listener = () => {
+      const amountToScroll = 96
+      const { scrollTop = 96 } = document.scrollingElement ?? {}
+      const nextOpacity = scrollTop / amountToScroll
+
+      setOpacity(nextOpacity)
+    }
+
+    document.addEventListener('scroll', listener)
+
+    return () => {
+      document.removeEventListener('scroll', listener)
+    }
+  }, [])
+
+  return (
+    <Box backgroundColor="background" color="onSurface">
+      <Box position="sticky" top="0" zIndex="2">
+        <Box position="relative">
+          <Box
+            data-testid="foo"
+            bgColor="background"
+            position="absolute"
+            top={0}
+            width="100%"
+            height="100%"
+            opacity={opacity}
+          />
+          <Topbar height="topbarHeight" zIndex={1} position="relative" />
+        </Box>
+      </Box>
+      <Box as="main" mt="-96px">
+        {React.Children.only(children)}
+      </Box>
+      <Divider />
+      <Footer />
     </Box>
-    <main>{React.Children.only(children)}</main>
-    <Divider />
-    <Footer />
-  </Box>
-)
+  )
+}

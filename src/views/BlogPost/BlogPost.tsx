@@ -55,6 +55,7 @@ export const BlogPost = ({ slug }: BlogPostProps) => {
       <Container maxW={['container.sm', 'container.sm', '768px']} py="6">
         <Center minHeight="70vh">
           <Box mx="auto" textAlign="center">
+            <Box height="topbarHeight" />
             <Heading as="h1" size="md">
               404 Not Found
             </Heading>
@@ -85,6 +86,7 @@ export const BlogPost = ({ slug }: BlogPostProps) => {
         <meta property="og:description" content={blogPost?.excerpt ?? ''} />
         <title>{`${titlePrefix}Blog | Atlanta Brewery Tours`}</title>
       </Head>
+      <Box height="topbarHeight" />
       <Stack align="left" spacing="4">
         <Button
           as={NextLink}
