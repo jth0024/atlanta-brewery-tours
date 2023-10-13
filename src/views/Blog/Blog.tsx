@@ -73,7 +73,7 @@ export const Blog = () => {
           top={0}
         />
         <Box
-          bgGradient="linear(to-b, background, neutralLight)"
+          bgGradient="linear(to-b, neutralLight, background)"
           position="absolute"
           height="100%"
           width="100%"
@@ -83,8 +83,6 @@ export const Blog = () => {
         <Section
           filled
           bgColor="transparent"
-          borderBottom="1px"
-          borderColor="border"
           position="relative"
           zIndex={1}
           pt={32}
