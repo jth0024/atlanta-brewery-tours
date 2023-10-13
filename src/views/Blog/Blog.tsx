@@ -13,6 +13,7 @@ import {
   Tag,
   Text,
   useColorModeValue,
+  useTheme,
   Wrap,
 } from '@chakra-ui/react'
 import { capitalize, intersection } from 'lodash'
@@ -59,8 +60,15 @@ export const Blog = () => {
     ? posts.filter(post => intersection(filters, post.tags).length)
     : posts
 
+  const theme = useTheme()
+  const { topbarHeight } = theme.sizes
+
   return (
-    <Box backgroundColor="background">
+    <Box
+      backgroundColor="background"
+      position="relative"
+      top={`-${topbarHeight}`}
+    >
       <Box position="relative">
         <Image
           src={heroSrc}
@@ -88,13 +96,13 @@ export const Blog = () => {
           pt={32}
           pb={36}
         >
-          <Box height="topbarHeight" />
           <Heading
             as="h1"
             fontWeight="800"
             size="4xl"
             textTransform="capitalize"
             color="onSurface"
+            mt={topbarHeight}
           >
             Blog
           </Heading>

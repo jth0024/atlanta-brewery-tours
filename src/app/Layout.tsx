@@ -52,9 +52,7 @@ export const Layout = ({ children }: LayoutProps) => {
             <Topbar height="topbarHeight" zIndex={1} position="relative" />
           </Box>
         </Box>
-        <Box as="main" mt="-96px">
-          {React.Children.only(children)}
-        </Box>
+        <Box as="main">{React.Children.only(children)}</Box>
         <Divider />
         <Footer />
       </Box>

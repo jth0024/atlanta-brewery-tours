@@ -103,7 +103,6 @@ export const Home = () => {
     <Box backgroundColor="background">
       <div ref={topRef} />
       <Section textAlign="left" py="16">
-        <Box height="topbarHeight" />
         <Heading
           as="h1"
           fontWeight="800"
