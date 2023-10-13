@@ -1,5 +1,6 @@
+import { ColorModeScript } from '@chakra-ui/react'
 import { Head, Html, Main, NextScript } from 'next/document'
-import { GoogleTagManagerFallback } from '../app/scripts'
+import { GoogleTagManagerFallback, theme } from '../app'
 
 export default function Document() {
   return (
@@ -8,6 +9,7 @@ export default function Document() {
         <link rel="shortcut icon" href="/images/logo-favicon-500-x-500.png" />
       </Head>
       <body>
+        <ColorModeScript initialColorMode={theme.config.initialColorMode} />
         <Main />
         <NextScript />
         <GoogleTagManagerFallback />
