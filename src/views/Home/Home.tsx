@@ -7,6 +7,7 @@ import {
   Heading,
   Stack,
   Text,
+  useColorModeValue,
   Wrap,
 } from '@chakra-ui/react'
 import { intersection, range } from 'lodash'
@@ -20,6 +21,10 @@ import React, {
 import { FaMapMarkedAlt } from 'react-icons/fa'
 import { useQuery } from 'urql'
 import { gql } from '../../__generated__'
+import {
+  DARK_SNAZZY_MAPS_EMBED_URL,
+  LIGHT_SNAZZY_MAPS_EMBED_URL,
+} from '../../app'
 import { Section, Slider } from '../../lib'
 import { Step } from './Step'
 import { TourCard } from './TourCard'
@@ -52,6 +57,10 @@ export const HOME_QUERY = gql(/* GraphQL */ `
 `)
 
 export const Home = () => {
+  const mapURL = useColorModeValue(
+    LIGHT_SNAZZY_MAPS_EMBED_URL,
+    DARK_SNAZZY_MAPS_EMBED_URL,
+  )
   const popularToursRef = useRef<HTMLHeadingElement | null>(null)
   const topRef = useRef<HTMLDivElement | null>(null)
   const scrollIntoView = useCallback(
@@ -94,6 +103,7 @@ export const Home = () => {
     <Box backgroundColor="background">
       <div ref={topRef} />
       <Section textAlign="left" py="16">
+        <Box height="topbarHeight" />
         <Heading
           as="h1"
           fontWeight="800"
@@ -114,7 +124,7 @@ export const Home = () => {
       </Section>
       <Box
         as="iframe"
-        src="https://snazzymaps.com/embed/413288"
+        src={mapURL}
         width="100%"
         height="50vh"
         border="none"
