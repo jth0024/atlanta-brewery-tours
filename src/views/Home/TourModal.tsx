@@ -231,6 +231,7 @@ export const TourModal = ({ id, isOpen, onClose, name }: TourModalProps) => {
                 <FormLabel fontWeight="600">Email Address</FormLabel>
                 <Input
                   type="email"
+                  id="email"
                   value={formData.email}
                   onChange={handleEmailChange}
                   textTransform="lowercase"
@@ -243,6 +244,7 @@ export const TourModal = ({ id, isOpen, onClose, name }: TourModalProps) => {
             <ModalFooter>
               <ButtonGroup mt="4">
                 <Button
+                  id="cancel"
                   variant="outline"
                   onClick={onClose}
                   disabled={result.fetching}
@@ -252,6 +254,7 @@ export const TourModal = ({ id, isOpen, onClose, name }: TourModalProps) => {
                 <Button
                   colorScheme="primary"
                   type="submit"
+                  id="submit"
                   isLoading={result.fetching}
                 >
                   Submit
