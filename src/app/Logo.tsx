@@ -8,7 +8,6 @@ export const Logo = ({ ...props }) => (
       objectFit="contain"
       src={logoSrc}
       alt="Atlanta Brewery Tours Logo"
-      height="100%"
       borderRadius="full"
     />
   </Box>
