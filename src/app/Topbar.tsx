@@ -20,7 +20,7 @@ export const Topbar = ({ ...rest }) => (
       alignItems="center"
       overflow="hidden"
     >
-      <Logo as={NextLink} href="/" height="100%" />
+      <Logo as={NextLink} href="/" height="80px" width="80px" />
       <Spacer display={['block', 'none']} height="2" flex="0 0 auto" />
       <Flex alignItems="center" marginLeft={[0, 'auto']} as="nav">
         <Link as={NextLink} href="/#tours" fontWeight="bold">
