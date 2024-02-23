@@ -112,7 +112,9 @@ export const BlogPost = ({ slug }: BlogPostProps) => {
               })
             : null}
         </Text>
-        <Heading size="xl">{blogPost.title}</Heading>
+        <Heading as="h1" size="xl">
+          {blogPost.title}
+        </Heading>
         {blogPost.tags.length ? (
           <HStack spacing={2}>
             {blogPost.status === 'DRAFT' ? (

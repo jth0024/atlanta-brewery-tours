@@ -29,6 +29,8 @@ const RichText = ({ content }: RichTextProps) => {
           display="inline-block"
           color="tertiary"
           href={content.text.link.url}
+          target="_blank"
+          rel="noopener"
         >
           {result}
         </Link>
