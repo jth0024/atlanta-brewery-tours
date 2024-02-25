@@ -1,29 +1,22 @@
 import {
   Box,
   Button,
-  Card,
-  CardBody,
-  CardFooter,
-  CardHeader,
   Center,
   Heading,
-  HStack,
   Image,
   Stack,
-  Tag,
   Text,
   useColorModeValue,
   useTheme,
   Wrap,
 } from '@chakra-ui/react'
 import { capitalize, intersection } from 'lodash'
-import NextLink from 'next/link'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
-import { IoChevronForwardOutline } from 'react-icons/io5'
 import { useQuery } from 'urql'
 import { gql } from '../../__generated__'
 import { Section } from '../../lib'
+import { BlogPostCard } from './BlogPostCard'
 
 export const BLOG_QUERY = gql(/* GraphQL */ `
   query Blog {
@@ -32,6 +25,7 @@ export const BLOG_QUERY = gql(/* GraphQL */ `
       excerpt
       id
       imageSrc
+      imageAltText
       status
       slug
       tags
@@ -145,65 +139,9 @@ export const Blog = () => {
         </Wrap>
         <Stack spacing="6">
           {filteredPosts.length ? (
-            filteredPosts.map(
-              ({ date, id, title, excerpt, tags, slug, status }) => (
-                <Box key={id}>
-                  <Card
-                    variant="outline"
-                    backgroundColor="surface"
-                    borderRadius="lg"
-                  >
-                    <CardHeader>
-                      <HStack spacing={2}>
-                        {status === 'DRAFT' ? (
-                          <Tag colorScheme="tertiary">Draft</Tag>
-                        ) : null}
-                        {tags.map(tag => (
-                          <Tag key={tag} colorScheme="secondary">
-                            {capitalize(tag)}
-                          </Tag>
-                        ))}
-                      </HStack>
-                      <Heading as="h3" fontSize="md" mt={6}>
-                        {title}
-                      </Heading>
-                    </CardHeader>
-                    <CardBody>
-                      <Text>{excerpt}</Text>
-                    </CardBody>
-                    <CardFooter
-                      justifyContent="space-between"
-                      alignItems="center"
-                    >
-                      <Text
-                        color="onSurfaceVariant"
-                        fontWeight="bold"
-                        fontSize="sm"
-                        mr="auto"
-                      >
-                        {date
-                          ? new Date(date).toLocaleDateString('en-US', {
-                              month: 'long',
-                              day: 'numeric',
-                              year: 'numeric',
-                            })
-                          : null}
-                      </Text>
-                      <Button
-                        as={NextLink}
-                        href={`/blog/${slug}`}
-                        colorScheme="primary"
-                        variant="link"
-                        rightIcon={<IoChevronForwardOutline />}
-                        ml="auto"
-                      >
-                        Read More
-                      </Button>
-                    </CardFooter>
-                  </Card>
-                </Box>
-              ),
-            )
+            filteredPosts.map(post => (
+              <BlogPostCard key={post.id} blogPost={post} />
+            ))
           ) : (
             <Center minHeight="50vh">
               <Box mx="auto" textAlign="center">
