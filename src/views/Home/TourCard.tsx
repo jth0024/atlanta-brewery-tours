@@ -59,7 +59,7 @@ export const TourCard = ({
         </CardBody>
         <CardFooter justifyContent="flex-end">
           <ButtonGroup>
-            <Button colorScheme="gray" onClick={onOpen}>
+            <Button id="TakeTourButton" colorScheme="gray" onClick={onOpen}>
               Take This Tour
             </Button>
           </ButtonGroup>

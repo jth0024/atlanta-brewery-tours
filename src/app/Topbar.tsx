@@ -33,6 +33,7 @@ export const Topbar = ({ ...rest }) => (
         <Spacer width={4} />
         <Button
           as="a"
+          id="BuyUsBeerButton"
           target="_blank"
           colorScheme="primary"
           href={VENMO_PROFILE_URL}
