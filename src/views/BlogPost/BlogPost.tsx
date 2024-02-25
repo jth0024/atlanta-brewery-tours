@@ -7,6 +7,7 @@ import {
   HStack,
   Image,
   Link,
+  Skeleton,
   Stack,
   Tag,
   Text,
@@ -29,6 +30,7 @@ export const BLOG_POST_QUERY = gql(/* GraphQL */ `
       excerpt
       id
       imageSrc
+      imageAltText
       slug
       status
       title
@@ -42,17 +44,42 @@ interface BlogPostProps {
 }
 
 export const BlogPost = ({ slug }: BlogPostProps) => {
-  const [{ data }] = useQuery({
+  const [{ data, fetching }] = useQuery({
     query: BLOG_POST_QUERY,
     variables: {
       slug,
     },
   })
   const { blogPost = null } = data ?? {}
+  const backButton = (
+    <Button
+      as={NextLink}
+      colorScheme="primary"
+      href="/blog"
+      variant="link"
+      marginRight="auto"
+      leftIcon={<IoChevronBackOutline />}
+    >
+      Back to Blog
+    </Button>
+  )
+
+  if (fetching) {
+    return (
+      <Container maxW={['container.sm', 'container.sm', '768px']} py="6">
+        {backButton}
+        <Stack spacing="4" alignItems="flex-start" my={6}>
+          <Skeleton height="50px" width="75%" />
+          <Skeleton height="50vh" width="100%" />
+        </Stack>
+      </Container>
+    )
+  }
 
   if (!blogPost) {
     return (
       <Container maxW={['container.sm', 'container.sm', '768px']} py="6">
+        {backButton}
         <Center minHeight="70vh">
           <Box mx="auto" textAlign="center">
             <Heading as="h1" size="md">
@@ -86,23 +113,7 @@ export const BlogPost = ({ slug }: BlogPostProps) => {
         <title>{`${titlePrefix}Blog | Atlanta Brewery Tours`}</title>
       </Head>
       <Stack align="left" spacing="4">
-        <Button
-          as={NextLink}
-          colorScheme="primary"
-          href="/blog"
-          variant="link"
-          marginRight="auto"
-          leftIcon={<IoChevronBackOutline />}
-        >
-          Back to Blog
-        </Button>
-        {blogPost.imageSrc ? (
-          <Image
-            borderRadius="lg"
-            alt={blogPost.title ?? ''}
-            src={blogPost.imageSrc ?? ''}
-          />
-        ) : null}
+        {backButton}
         <Text color="onSurfaceVariant" fontWeight="bold" fontSize="sm">
           {blogPost.date
             ? new Date(blogPost.date).toLocaleDateString('en-US', {
@@ -127,6 +138,16 @@ export const BlogPost = ({ slug }: BlogPostProps) => {
             ))}
           </HStack>
         ) : null}
+        {blogPost.imageSrc ? (
+          <Image
+            borderRadius="lg"
+            alt={
+              blogPost.imageAltText ??
+              `Header image for ${blogPost.title ?? ''} blog post`
+            }
+            src={blogPost.imageSrc ?? ''}
+          />
+        ) : null}
         {content ? (
           <Stack mt={6} spacing="6">
             {content.results.map(block => (
@@ -134,7 +155,6 @@ export const BlogPost = ({ slug }: BlogPostProps) => {
             ))}
           </Stack>
         ) : null}
-        {blogPost.content}
       </Stack>
     </Container>
   )

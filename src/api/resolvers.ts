@@ -1,13 +1,22 @@
-/* eslint-disable no-underscore-dangle */
-import { Client, isFullPage } from '@notionhq/client'
+/* eslint-disable no-underscore-dangle, camelcase */
+import { GetPageResponse } from '@notionhq/client/build/src/api-endpoints'
+import { first, get, toUpper } from 'lodash'
 import {
-  GetPageResponse,
-  ListBlockChildrenResponse,
-  QueryDatabaseParameters,
-} from '@notionhq/client/build/src/api-endpoints'
-import { get, identity, toUpper } from 'lodash'
+  getCheckboxPropertyValue,
+  getCreatedTimePropertyValue,
+  getFilesPropertyValue,
+  getMultiSelectPropertyValue,
+  getNumberPropertyValue,
+  getPageId,
+  getRichTextPropertyValue,
+  getSelectPropertyValue,
+  getTitlePropertyValue,
+  queryDatabase,
+  retrievePage,
+  retrievePageContent,
+  retrieveRelation,
+} from './notion'
 
-const auth = process.env.NOTION_API_KEY ?? ''
 const hubspotToken = process.env.HUBSPOT_ACCESS_TOKEN ?? ''
 const toursDB = process.env.NOTION_TOURS_DATABASE_ID ?? ''
 const regionsDB = process.env.NOTION_REGIONS_DATABASE_ID ?? ''
@@ -15,126 +24,103 @@ const breweriesDB = process.env.NOTION_BREWERIES_DATABASE_ID ?? ''
 const blogPostsDB = process.env.NOTION_BLOG_POSTS_DATABASE_ID ?? ''
 const neighborhoodsDB = process.env.NOTION_NEIGHBORHOODS_DATABASE_ID ?? ''
 
-export const client = new Client({ auth })
-
-const getCheckbox = (response: GetPageResponse, field: string): boolean =>
-  get(response, ['properties', field, 'checkbox'], false)
-const getCreatedTime = (response: GetPageResponse, field: string): string =>
-  get(response, ['properties', field, 'created_time'], '')
-const getId = (response: GetPageResponse): string => get(response, 'id', '')
-const getImageFile = (response: GetPageResponse, field: string): string =>
-  get(response, ['properties', field, 'files', 0, 'file', 'url'], '')
-const getMultiSelect = (response: GetPageResponse, field: string): string[] =>
-  get(response, ['properties', field, 'multi_select'], []).map(
-    ({ name }: { name: string }) => name,
-  )
-const getNumber = (response: GetPageResponse, field: string): number =>
-  get(response, ['properties', field, 'number'], 0)
-const getRichText = (response: GetPageResponse, field: string): string =>
-  get(response, ['properties', field, 'rich_text'], [])
-    .map(({ plain_text: plainText }: { plain_text: string }) => plainText)
-    .join(' ')
-const getSelect = (
-  response: GetPageResponse,
-  field: string,
-  fallback = '',
-): string => get(response, ['properties', field, 'select', 'name'], fallback)
-const getTitle = (response: GetPageResponse, field: string): string =>
-  get(response, ['properties', field, 'title'], [])
-    .map(({ plain_text: plainText }: { plain_text: string }) => plainText)
-    .join(' ')
-
-const queryDatabase = async (
-  id: string,
-  mapper: (response: GetPageResponse) => unknown,
-  filter?: QueryDatabaseParameters['filter'],
-) => {
-  const { results } = await client.databases.query({
-    database_id: id,
-    filter,
-  })
-  return results.filter(isFullPage).map(mapper)
-}
-
-const retrievePage = async (
-  id: string,
-  mapper: (response: GetPageResponse) => unknown,
-) => {
-  const result = await client.pages.retrieve({ page_id: id })
-  return mapper(result)
-}
-
-const retrievePageContent = async <T>(
-  id: string,
-  mapper: (response: ListBlockChildrenResponse) => T = identity,
-) => {
-  const result = await client.blocks.children.list({
-    block_id: id,
-  })
-  return mapper(result)
-}
-
-const retrieveRelation = async (
-  pageId: string,
-  propertyId: string,
-  mapper: (response: GetPageResponse) => unknown,
-) => {
-  const property = await client.pages.properties.retrieve({
-    page_id: pageId,
-    property_id: propertyId,
-  })
-  const pages = await Promise.all(
-    get(property, 'results', []).map(result =>
-      client.pages.retrieve({
-        page_id: get(result, 'relation.id', ''),
-      }),
-    ),
-  )
-  return pages.map(mapper)
-}
-
-const toBlogPost = (response: GetPageResponse) => ({
-  date: getCreatedTime(response, 'Created'),
-  excerpt: getRichText(response, 'Excerpt'),
-  id: getId(response),
-  imageSrc: getImageFile(response, 'Image'),
-  slug: getRichText(response, 'Slug'),
-  status: toUpper(getSelect(response, 'Status', 'DRAFT')),
-  tags: getMultiSelect(response, 'Tags'),
-  title: getTitle(response, 'Title'),
+const blogPostMapper = (response: GetPageResponse) => ({
+  _response: response,
+  date: getCreatedTimePropertyValue(response, 'Created'),
+  excerpt: getRichTextPropertyValue(response, 'Excerpt')
+    .map(({ plain_text }) => plain_text)
+    .join(' '),
+  id: getPageId(response),
+  imageSrc: first(
+    getFilesPropertyValue(response, 'ImgSrc').map(src => {
+      switch (src.type) {
+        case 'external':
+          return src.external.url
+        case 'file':
+          return src.file.url
+        default:
+          return ''
+      }
+    }),
+  ),
+  imageAltText: getRichTextPropertyValue(response, 'ImgAltText')
+    .map(({ plain_text }) => plain_text)
+    .join(' '),
+  slug: getRichTextPropertyValue(response, 'Slug')
+    .map(({ plain_text }) => plain_text)
+    .join(' '),
+  status: toUpper(getSelectPropertyValue(response, 'Status')?.name ?? 'DRAFT'),
+  tags: getMultiSelectPropertyValue(response, 'Tags').map(({ name }) => name),
+  title: getTitlePropertyValue(response, 'Title')
+    .map(({ plain_text }) => plain_text)
+    .join(' '),
 })
 
-const toBrewery = (response: GetPageResponse) => ({
-  _neighborhoodId: get(response, 'properties.Neighborhood.id', ''),
-  id: getId(response),
-  name: getTitle(response, 'Name'),
-  address: getRichText(response, 'Address'),
+const breweryMapper = (response: GetPageResponse) => ({
+  _response: response,
+  id: getPageId(response),
+  name: getTitlePropertyValue(response, 'Name')
+    .map(({ plain_text }) => plain_text)
+    .join(' '),
+  address: getRichTextPropertyValue(response, 'Address')
+    .map(({ plain_text }) => plain_text)
+    .join(' '),
 })
 
-const toNeighborhood = (response: GetPageResponse) => ({
+const neighborhoodMapper = (response: GetPageResponse) => ({
   _regionsId: get(response, 'properties.Regions.id', ''),
-  id: getId(response),
-  imageSrc: getImageFile(response, 'Image'),
-  description: getRichText(response, 'Description'),
-  name: getTitle(response, 'Name'),
-  slug: getRichText(response, 'Slug'),
+  id: getPageId(response),
+  imageSrc: first(
+    getFilesPropertyValue(response, 'Image').map(src => {
+      switch (src.type) {
+        case 'external':
+          return src.external.url
+        case 'file':
+          return src.file.url
+        default:
+          return ''
+      }
+    }),
+  ),
+  description: getRichTextPropertyValue(response, 'Description')
+    .map(({ plain_text }) => plain_text)
+    .join(' '),
+  name: getTitlePropertyValue(response, 'Name')
+    .map(({ plain_text }) => plain_text)
+    .join(' '),
+  slug: getRichTextPropertyValue(response, 'Slug')
+    .map(({ plain_text }) => plain_text)
+    .join(' '),
 })
 
-const toRegion = (response: GetPageResponse) => ({
-  id: getId(response),
-  name: getTitle(response, 'Name'),
+const regionMapper = (response: GetPageResponse) => ({
+  _response: response,
+  id: getPageId(response),
+  // eslint-disable-next-line camelcase
+  name: getTitlePropertyValue(response, 'Name')
+    .map(({ plain_text }) => plain_text)
+    .join(' '),
 })
 
-const toTour = (response: GetPageResponse) => ({
+const tourMapper = (response: GetPageResponse) => ({
+  _response: response,
   _breweriesId: get(response, 'properties.Breweries.id', ''),
   _neighborhoodId: get(response, 'properties.Neighborhood.id', ''),
-  description: getRichText(response, 'Description'),
-  id: getId(response),
-  isFeatured: getCheckbox(response, 'Featured'),
-  name: getTitle(response, 'Name'),
-  distance: getNumber(response, 'Distance'),
-  googleMapsLink: getRichText(response, 'Google Maps Link'),
-  googleMapsEmbed: getRichText(response, 'Google Maps Embed'),
+  description: getRichTextPropertyValue(response, 'Description')
+    .map(({ plain_text }) => plain_text)
+    .join(' '),
+  id: getPageId(response),
+  isFeatured: getCheckboxPropertyValue(response, 'Featured'),
+  name: getTitlePropertyValue(response, 'Name')
+    .map(({ plain_text }) => plain_text)
+    .join(' '),
+  distance: getNumberPropertyValue(response, 'Distance'),
+  googleMapsLink: getRichTextPropertyValue(response, 'Google Maps Link')
+    .map(({ plain_text }) => plain_text)
+    .join(' '),
+  googleMapsEmbed: getRichTextPropertyValue(response, 'Google Maps Embed')
+    .map(({ plain_text }) => plain_text)
+    .join(' '),
 })
 
 export const resolvers = {
@@ -215,7 +201,7 @@ export const resolvers = {
         }
 
         if (input.tourID && input.tourName) {
-          const tour = await retrievePage(input.tourID, toTour)
+          const tour = await retrievePage(input.tourID, tourMapper)
           return { subscriber, tour }
         }
 
@@ -229,7 +215,7 @@ export const resolvers = {
   },
   Query: {
     async blogPost(_: null, args: { id: string }) {
-      return retrievePage(args.id, toBlogPost)
+      return retrievePage(args.id, blogPostMapper)
     },
     async blogPostBySlug(_: null, args: { slug: string }) {
       const filter = {
@@ -239,20 +225,20 @@ export const resolvers = {
         },
       }
 
-      const results = await queryDatabase(blogPostsDB, toBlogPost, filter)
+      const results = await queryDatabase(blogPostsDB, blogPostMapper, filter)
       return results[0]
     },
     async blogPosts() {
-      return queryDatabase(blogPostsDB, toBlogPost)
+      return queryDatabase(blogPostsDB, blogPostMapper)
     },
     async brewery(_: null, args: { id: string }) {
-      return retrievePage(args.id, toBrewery)
+      return retrievePage(args.id, breweryMapper)
     },
     async breweries() {
-      return queryDatabase(breweriesDB, toBrewery)
+      return queryDatabase(breweriesDB, breweryMapper)
     },
     async neighborhood(_: null, args: { id: string }) {
-      return retrievePage(args.id, toNeighborhood)
+      return retrievePage(args.id, neighborhoodMapper)
     },
     async neighborhoods(_: null, args: { filter?: { slug?: string } }) {
       const filter = args.filter?.slug
@@ -263,21 +249,20 @@ export const resolvers = {
             },
           }
         : undefined
-      return queryDatabase(neighborhoodsDB, toNeighborhood, filter)
+      return queryDatabase(neighborhoodsDB, neighborhoodMapper, filter)
     },
     async regions() {
-      return queryDatabase(regionsDB, toRegion)
+      return queryDatabase(regionsDB, regionMapper)
     },
     async tour(_: GetPageResponse, args: { id: string }) {
-      return retrievePage(args.id, toTour)
+      return retrievePage(args.id, tourMapper)
     },
     async tours() {
-      return queryDatabase(toursDB, toTour)
+      return queryDatabase(toursDB, tourMapper)
     },
   },
   BlogPost: {
     async content(parent: { id: string }) {
-      console.log(parent)
       const result = await retrievePageContent(parent.id)
       return JSON.stringify(result)
     },
@@ -287,25 +272,25 @@ export const resolvers = {
       const neighborhoods = await retrieveRelation(
         parent.id,
         parent._neighborhoodId,
-        toNeighborhood,
+        neighborhoodMapper,
       )
       return neighborhoods[0]
     },
   },
   Neighborhood: {
     async regions(parent: { _regionsId: string; id: string }) {
-      return retrieveRelation(parent.id, parent._regionsId, toRegion)
+      return retrieveRelation(parent.id, parent._regionsId, regionMapper)
     },
   },
   Tour: {
     async breweries(parent: { _breweriesId: string; id: string }) {
-      return retrieveRelation(parent.id, parent._breweriesId, toBrewery)
+      return retrieveRelation(parent.id, parent._breweriesId, breweryMapper)
     },
     async neighborhood(parent: { _neighborhoodId: string; id: string }) {
       const neighborhoods = await retrieveRelation(
         parent.id,
         parent._neighborhoodId,
-        toNeighborhood,
+        neighborhoodMapper,
       )
       return neighborhoods[0]
     },

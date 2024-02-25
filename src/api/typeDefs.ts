@@ -8,12 +8,13 @@ export const typeDefs = gql`
 
   type BlogPost {
     id: ID!
-    title: String
-    slug: String
-    date: String
-    excerpt: String
-    content: String
+    title: String!
+    slug: String!
+    date: String!
+    excerpt: String!
+    content: String!
     imageSrc: String
+    imageAltText: String
     tags: [String!]!
     status: BlogPostStatus!
   }
