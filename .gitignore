@@ -5,3 +5,4 @@ node_modules
 __generated__
 .DS_Store
 .env*.local
+.DS_Store

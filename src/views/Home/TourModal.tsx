@@ -254,7 +254,7 @@ export const TourModal = ({ id, isOpen, onClose, name }: TourModalProps) => {
                 <Button
                   colorScheme="primary"
                   type="submit"
-                  id="submit"
+                  id="TakeTourSubmitButton"
                   isLoading={result.fetching}
                 >
                   Submit
