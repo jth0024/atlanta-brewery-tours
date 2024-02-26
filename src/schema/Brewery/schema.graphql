@@ -1,0 +1,11 @@
+extend type Query {
+  breweries: [Brewery!]!
+  brewery(id: ID!): Brewery
+}
+
+type Brewery {
+  id: ID!
+  name: String
+  neighborhood: Neighborhood
+  address: String
+}

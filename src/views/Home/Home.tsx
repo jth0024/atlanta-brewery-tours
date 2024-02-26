@@ -20,12 +20,12 @@ import React, {
 } from 'react'
 import { FaMapMarkedAlt } from 'react-icons/fa'
 import { useQuery } from 'urql'
-import { gql } from '../../__generated__'
 import {
   DARK_SNAZZY_MAPS_EMBED_URL,
   LIGHT_SNAZZY_MAPS_EMBED_URL,
 } from '../../app'
 import { Section, Slider } from '../../lib'
+import { gql } from '../../schema/client'
 import { Step } from './Step'
 import { TourCard } from './TourCard'
 import { TourCardSkeleton } from './TourCardSkeleton'

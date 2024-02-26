@@ -2,7 +2,7 @@ node_modules
 .next
 .vercel
 .env.local
-__generated__
+schema/client
 .DS_Store
 .env*.local
 .DS_Store

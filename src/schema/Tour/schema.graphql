@@ -1,0 +1,16 @@
+extend type Query {
+  tours: [Tour!]!
+  tour(id: ID!): Tour
+}
+
+type Tour {
+  id: ID!
+  isFeatured: Boolean
+  name: String
+  breweries: [Brewery!]!
+  description: String
+  distance: Float
+  neighborhood: Neighborhood
+  googleMapsLink: String
+  googleMapsEmbed: String
+}

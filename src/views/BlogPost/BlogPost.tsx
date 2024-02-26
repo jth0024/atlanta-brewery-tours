@@ -18,8 +18,8 @@ import Head from 'next/head'
 import NextLink from 'next/link'
 import { IoChevronBackOutline } from 'react-icons/io5'
 import { useQuery } from 'urql'
-import { gql } from '../../__generated__'
 import { parse } from '../../lib'
+import { gql } from '../../schema/client'
 import { BlockRenderer } from './BlockRenderer'
 
 export const BLOG_POST_QUERY = gql(/* GraphQL */ `

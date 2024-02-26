@@ -19,7 +19,7 @@ import React, { FormEventHandler, useCallback, useState } from 'react'
 import { BiLogoVenmo } from 'react-icons/bi'
 import { FaFacebook, FaInstagram } from 'react-icons/fa'
 import { useMutation } from 'urql'
-import { gql } from '../__generated__'
+import { gql } from '../schema/client'
 import { INSTAGRAM_PROFILE_URL, VENMO_PROFILE_URL } from './constants'
 
 const CREATE_SUBSCRIBER_MUTATION = gql(/* GraphQL */ `

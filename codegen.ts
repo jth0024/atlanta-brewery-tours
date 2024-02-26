@@ -1,10 +1,12 @@
+import { defineConfig } from '@eddeee888/gcg-typescript-resolver-files'
 import { CodegenConfig } from '@graphql-codegen/cli'
 
 const config: CodegenConfig = {
-  schema: './src/api/schema.ts',
+  schema: '**/schema.graphql',
   documents: ['src/**/*.tsx'],
   generates: {
-    './src/__generated__/': {
+    './src/schema': defineConfig(),
+    './src/schema/client/': {
       preset: 'client',
       plugins: [],
       presetConfig: {

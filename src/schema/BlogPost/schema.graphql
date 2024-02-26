@@ -1,0 +1,23 @@
+extend type Query {
+  blogPost(id: ID!): BlogPost
+  blogPostBySlug(slug: String!): BlogPost
+  blogPosts: [BlogPost!]!
+}
+
+enum BlogPostStatus {
+  DRAFT
+  PUBLISHED
+}
+
+type BlogPost {
+  id: ID!
+  title: String!
+  slug: String!
+  date: String!
+  excerpt: String!
+  content: String!
+  imageSrc: String
+  imageAltText: String
+  tags: [String!]!
+  status: BlogPostStatus!
+}

@@ -37,6 +37,10 @@
         "tsx": "never"
       }
     ],
+    "import/no-extraneous-dependencies": [
+      "error",
+      { "devDependencies": ["codegen.ts", "**/*.test.ts", "**/*.test.tsx"] }
+    ],
     "import/order": "off",
     "import/prefer-default-export": "off",
     "react/jsx-filename-extension": [1, { "extensions": [".tsx", ".jsx"] }],
