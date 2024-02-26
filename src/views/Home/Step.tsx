@@ -1,4 +1,4 @@
-import { Circle, Heading, Icon, Stack } from '@chakra-ui/react'
+import { Heading, Icon, Stack } from '@chakra-ui/react'
 import { ComponentProps } from 'react'
 
 type StepProps = {

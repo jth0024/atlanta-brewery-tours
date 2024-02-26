@@ -109,6 +109,7 @@ export const BlockRenderer = ({ block }: BlockRendererProps) => {
         </Text>
       )
     default: {
+      // eslint-disable-next-line no-console
       console.warn(`Unsupported block type: ${block.type}`)
       return null
     }
