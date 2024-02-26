@@ -1,7 +1,7 @@
 import { executeExchange } from '@urql/exchange-execute'
 import { initUrqlClient } from 'next-urql'
 import { cacheExchange, Client, dedupExchange, ssrExchange } from 'urql'
-import { schema } from '../api'
+import { schema } from '../schema'
 import { API_URL } from './constants'
 
 export const initQueryClient = async (...args: Parameters<Client['query']>) => {

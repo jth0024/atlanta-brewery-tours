@@ -1,0 +1,22 @@
+extend type Mutation {
+  createSubscriber(input: CreateSubscriberInput!): CreateSubscriberResult!
+}
+
+input CreateSubscriberInput {
+  email: String!
+  firstName: String
+  lastName: String
+  tourName: String
+  tourID: String
+}
+
+type CreateSubscriberResult {
+  subscriber: Subscriber!
+  tour: Tour
+}
+
+type Subscriber {
+  email: String!
+  firstName: String
+  lastName: String
+}

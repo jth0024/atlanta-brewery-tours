@@ -24,7 +24,7 @@ import {
 } from '@chakra-ui/react'
 import React, { FormEventHandler, useCallback, useState } from 'react'
 import { useMutation } from 'urql'
-import { gql } from '../../__generated__'
+import { gql } from '../../schema/client'
 
 const CREATE_SUBSCRIBER_MUTATION = gql(/* GraphQL */ `
   mutation CreateSubscriberFromTour($input: CreateSubscriberInput!) {

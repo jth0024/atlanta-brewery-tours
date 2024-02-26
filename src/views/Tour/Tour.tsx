@@ -30,15 +30,13 @@ import {
   FaBeer,
   FaCameraRetro,
   FaClock,
-  FaHandPaper,
   FaMapMarkedAlt,
-  FaQuestionCircle,
   FaSmileBeam,
 } from 'react-icons/fa'
 import { useQuery } from 'urql'
-import { gql } from '../../__generated__'
 import { INSTAGRAM_PROFILE_URL } from '../../app'
 import { Section } from '../../lib'
+import { gql } from '../../schema/client'
 
 export const TOUR_QUERY = gql(/* GraphQL */ `
   query Tour($id: ID!) {

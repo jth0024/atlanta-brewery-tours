@@ -14,8 +14,8 @@ import { capitalize, intersection } from 'lodash'
 import { useRouter } from 'next/router'
 import { useState } from 'react'
 import { useQuery } from 'urql'
-import { gql } from '../../__generated__'
 import { Section } from '../../lib'
+import { gql } from '../../schema/client'
 import { BlogPostCard } from './BlogPostCard'
 
 export const BLOG_QUERY = gql(/* GraphQL */ `

@@ -12,7 +12,7 @@ import {
 } from '@chakra-ui/react'
 import NextLink from 'next/link'
 import { useQuery } from 'urql'
-import { gql } from '../../__generated__'
+import { gql } from '../../schema/client'
 import { TourCard } from '../Home/TourCard'
 
 export const NEIGHBORHOOD_QUERY = gql(/* GraphQL */ `

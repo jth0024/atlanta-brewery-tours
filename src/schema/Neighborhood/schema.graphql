@@ -1,0 +1,17 @@
+extend type Query {
+  neighborhoods(filter: NeighborhoodsInput): [Neighborhood!]!
+  neighborhood(id: ID!): Neighborhood
+}
+
+input NeighborhoodsInput {
+  slug: String
+}
+
+type Neighborhood {
+  id: ID!
+  name: String
+  description: String
+  imageSrc: String
+  slug: String
+  regions: [Region!]!
+}
