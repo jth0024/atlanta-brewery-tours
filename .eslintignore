@@ -1,2 +1,8 @@
 *.generated.*
+*.d.ts
+.next
+.vercel
+.env.local
+.env*.local
+node_modules
 src/schema/client

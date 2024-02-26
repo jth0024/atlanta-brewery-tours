@@ -2,7 +2,4 @@ node_modules
 .next
 .vercel
 .env.local
-schema/client
-.DS_Store
 .env*.local
-.DS_Store
