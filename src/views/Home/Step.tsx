@@ -4,20 +4,16 @@ import { ComponentProps } from 'react'
 type StepProps = {
   title: string
   description: string
-  // order: number
   icon: ComponentProps<typeof Icon>['as']
 } & ComponentProps<typeof Stack>
 
 export const Step = ({ description, icon, title, ...rest }: StepProps) => (
   <Stack
     spacing="4"
-    alignItems={{ base: 'center', sm: 'center' }}
-    justifyContent={{ base: 'flex-start', sm: 'flex-start' }}
-    direction={{ base: 'column', sm: 'column' }}
-    backgroundColor={{ base: 'surface', sm: 'surface' }}
-    borderRadius="lg"
-    color="onSurfaceVariant"
-    py={{ base: '4', sm: '6' }}
+    alignItems="center"
+    justifyContent="flex-start"
+    direction="column"
+    backgroundColor="surface"
     px={{ base: 0, sm: '4' }}
     {...rest}
   >
@@ -32,11 +28,11 @@ export const Step = ({ description, icon, title, ...rest }: StepProps) => (
         as="h3"
         fontWeight="800"
         size={{ base: 'sm', sm: 'md' }}
-        textAlign={{ base: 'center', sm: 'center' }}
+        textAlign="center"
       >
         {title}
       </Heading>
-      <Text textAlign={{ base: 'center', sm: 'center' }} fontSize="md">
+      <Text textAlign="center" fontSize="md">
         {description}
       </Text>
     </Stack>
