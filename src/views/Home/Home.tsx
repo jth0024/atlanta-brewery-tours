@@ -131,7 +131,7 @@ export const Home = () => {
       />
       <Divider orientation="horizontal" />
       <Stack spacing="0" py="6">
-        <Section textAlign="center" size="md" px={{ base: 2, sm: '4' }}>
+        <Section textAlign="center" size="md" px={{ base: '2', sm: '4' }}>
           <Heading as="h2" size="xl" textTransform="capitalize">
             How it Works
           </Heading>
