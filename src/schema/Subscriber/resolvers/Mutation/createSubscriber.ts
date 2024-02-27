@@ -2,7 +2,9 @@ import { isFullPage } from '@notionhq/client'
 import type { MutationResolvers } from '../../../types.generated'
 import { hubspotToken, notionClient } from '../../../utils'
 
-export const createSubscriber: NonNullable<MutationResolvers['createSubscriber']> = async (_parent, _arg) => {
+export const createSubscriber: NonNullable<
+  MutationResolvers['createSubscriber']
+> = async (_parent, _arg) => {
   const { input } = _arg
   const data = {
     fields: [
