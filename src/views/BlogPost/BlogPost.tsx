@@ -104,8 +104,9 @@ export const BlogPost = ({ slug }: BlogPostProps) => {
 
   return (
     <Container maxW={['container.sm', 'container.sm', '768px']} py="6">
-      <Head>
+      <Head key={slug}>
         <meta name="title" content={blogPost.title ?? ''} />
+        <meta property="og:image" content={blogPost?.imageSrc ?? ''} />
         <meta property="og:title" content={blogPost?.title ?? ''} />
         <meta property="twitter:title" content={blogPost?.title ?? ''} />
         <meta name="description" content={blogPost?.excerpt ?? ''} />
