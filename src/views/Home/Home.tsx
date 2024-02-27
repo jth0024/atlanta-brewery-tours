@@ -1,4 +1,4 @@
-import { ArrowForwardIcon, EmailIcon, Search2Icon } from '@chakra-ui/icons'
+import { ArrowForwardIcon } from '@chakra-ui/icons'
 import {
   Box,
   Button,
@@ -18,7 +18,7 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import { FaMapMarkedAlt } from 'react-icons/fa'
+import { TbMailPin, TbMap2, TbSearch } from 'react-icons/tb'
 import { useQuery } from 'urql'
 import {
   DARK_SNAZZY_MAPS_EMBED_URL,
@@ -131,37 +131,37 @@ export const Home = () => {
       />
       <Divider orientation="horizontal" />
       <Stack spacing="0" py="6">
-        <Section textAlign="center">
+        <Section textAlign="center" size="md" px={{ base: 2, sm: '4' }}>
           <Heading as="h2" size="xl" textTransform="capitalize">
             How it Works
           </Heading>
           <Stack
             py="12"
-            spacing={4}
-            direction="row"
-            alignItems="stretch"
-            justifyContent="center"
+            spacing={{ base: '1', sm: '6' }}
+            direction={{ base: 'row', sm: 'row' }}
+            alignItems={{ base: 'stretch', sm: 'stretch' }}
+            justifyContent={{ base: 'space-between', sm: 'center' }}
           >
             <Step
-              maxW={{ base: 'none', sm: '160px' }}
-              minH={{ base: 'none', sm: '160px' }}
+              maxW={{ base: '320px', sm: '360px' }}
               flex="0 0 30%"
-              icon={Search2Icon}
-              description="Find a tour"
+              icon={TbSearch}
+              title="Find a Tour"
+              description="Choose from our curated list of tours."
             />
             <Step
               flex="0 0 30%"
-              maxW={{ base: 'none', sm: '160px' }}
-              minH={{ base: 'none', sm: '160px' }}
-              icon={EmailIcon}
-              description="Enter your email"
+              maxW={{ base: '320px', sm: '360px' }}
+              icon={TbMailPin}
+              title="Register"
+              description="Provide your email, and we'll send the tour itinerary."
             />
             <Step
               flex="0 0 30%"
-              maxW={{ base: 'none', sm: '160px' }}
-              minH={{ base: 'none', sm: '160px' }}
-              icon={FaMapMarkedAlt}
-              description="Receive your tour!"
+              maxW={{ base: '320px', sm: '360px' }}
+              icon={TbMap2}
+              title="Embark!"
+              description="Follow the easy instructions and enjoy. Cheers!"
             />
           </Stack>
           <Button
