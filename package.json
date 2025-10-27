@@ -11,7 +11,7 @@
     "format": "prettier . --write --ignore-unknown",
     "generate": "graphql-codegen && npm run format",
     "lint": "npm run lint:analysis && npm run lint:formatting",
-    "lint:analysis": "eslint . --cache --cache-location ./node_modules/.cache/eslint --max-warnings 0",
+    "lint:analysis": "eslint . --cache --cache-location ./node_modules/.cache/eslint --max-warnings 0 --ignore-path .eslintignore",
     "lint:formatting": "prettier . --list-different --ignore-unknown",
     "prepare": "husky",
     "start": "next start"

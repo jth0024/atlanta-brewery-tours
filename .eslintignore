@@ -6,3 +6,4 @@
 .env*.local
 node_modules
 src/schema/client
+next-sitemap.config.js
