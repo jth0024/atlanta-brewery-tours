@@ -3,3 +3,7 @@ node_modules
 .vercel
 .env.local
 .env*.local
+public/robots.txt
+.DS_Store
+sitemap.xml
+sitemap-*.xml
