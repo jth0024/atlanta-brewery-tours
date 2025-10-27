@@ -4,6 +4,18 @@
   "description": "",
   "keywords": [],
   "main": "src/index.tsx",
+  "scripts": {
+    "build": "next build",
+    "postbuild": "next-sitemap",
+    "dev": "next dev",
+    "format": "prettier . --write --ignore-unknown",
+    "generate": "graphql-codegen && npm run format",
+    "lint": "npm run lint:analysis && npm run lint:formatting",
+    "lint:analysis": "eslint . --cache --cache-location ./node_modules/.cache/eslint --max-warnings 0 --ignore-path .eslintignore",
+    "lint:formatting": "prettier . --list-different --ignore-unknown",
+    "prepare": "husky",
+    "start": "next start"
+  },
   "dependencies": {
     "@apollo/server": "^4.1.1",
     "@as-integrations/next": "^1.2.0",
@@ -55,24 +67,15 @@
     "graphql-scalars": "^1.22.5",
     "husky": "^9.0.11",
     "lint-staged": "^15.2.2",
+    "next-sitemap": "^4.2.3",
     "prettier": "^3.2.5",
     "typescript": "^4.9.3"
-  },
-  "scripts": {
-    "build": "next build",
-    "dev": "next dev",
-    "format": "prettier . --write --ignore-unknown",
-    "generate": "graphql-codegen && npm run format",
-    "lint": "npm run lint:analysis && npm run lint:formatting",
-    "lint:analysis": "eslint . --cache --cache-location ./node_modules/.cache/eslint --max-warnings 0",
-    "lint:formatting": "prettier . --list-different --ignore-unknown",
-    "prepare": "husky",
-    "start": "next start"
   },
   "browserslist": [
     ">0.2%",
     "not dead",
     "not ie <= 11",
     "not op_mini all"
-  ]
+  ],
+  "packageManager": "pnpm@10.13.1+sha512.37ebf1a5c7a30d5fabe0c5df44ee8da4c965ca0c5af3dbab28c3a1681b70a256218d05c81c9c0dcf767ef6b8551eb5b960042b9ed4300c59242336377e01cfad"
 }
